@@ -18,6 +18,7 @@ model User {
   email     String      @unique
   name      String
   presences Presences[]
+  password  String
 
   @@map("tb_users")
 }
@@ -37,7 +38,7 @@ model Presences {
   userId    Int
   teacher   Teacher  @relation(fields: [teacherId], references: [id])
   teacherId Int
-  startsAt  DateTime @default(now())
+  startsAt  DateTime 
   endAt     DateTime
 
   @@map("tb_presences")

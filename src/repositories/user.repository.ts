@@ -9,7 +9,8 @@ export class UserRepository {
         const createUser = await this.prisma.user.create({
             data: {
                 name: user.getName,
-                email: user.getEmail
+                email: user.getEmail,
+                password: user.getPassword
             }
         });
 
@@ -17,6 +18,7 @@ export class UserRepository {
             .withId(createUser.id)
             .withName(createUser.name)
             .withEmail(createUser.email)
+            .withPassword(createUser.password)
             .build();
     }
 
@@ -42,6 +44,24 @@ export class UserRepository {
         const user = await this.prisma.user.findFirst({
             where: {
                 email
+            }
+        });
+
+        if (!user) {
+            return null;
+        }
+
+        return User.Builder
+            .withId(user.id)
+            .withName(user.name)
+            .withEmail(user.email)
+            .build();
+    }
+
+    public async findByPassword(password: string): Promise<User | null> {
+        const user = await this.prisma.user.findFirst({
+            where: {
+                password: password
             }
         });
 

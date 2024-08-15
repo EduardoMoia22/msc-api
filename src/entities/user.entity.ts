@@ -4,7 +4,8 @@ export class User{
     constructor(
         private readonly id: number,
         private readonly name: string,
-        private readonly email: string
+        private readonly email: string,
+        private readonly password: string,
     ) {}
 
     public static get Builder() {
@@ -21,5 +22,9 @@ export class User{
 
     public get getEmail(): string{
         return this.email;
+    }
+
+    public get getPassword(): string{
+        return this.password;
     }
 }

@@ -4,6 +4,7 @@ export class UserBuilder {
     private id: number;
     private name: string;
     private email: string;
+    private password: string;
 
     public withId(id: number): this {
         this.id = id;
@@ -20,7 +21,12 @@ export class UserBuilder {
         return this;
     }
 
+    public withPassword(password: string): this {
+        this.password = password;
+        return this;
+    }
+
     public build(): User {
-        return new User(this.id, this.name, this.email);
+        return new User(this.id, this.name, this.email, this.password);
     }
 }

@@ -13,6 +13,7 @@ export class PresenceRepository {
             data: {
                 userId: presence.getUser.getId,
                 teacherId: presence.getTeacher.getId,
+                startsAt: presence.getStartsAt,
                 endAt: presence.getEndsAt
             },
             include: {
@@ -38,5 +39,47 @@ export class PresenceRepository {
             .withStartsAt(createPresence.startsAt)
             .withEndsAt(createPresence.endAt)
             .build();
+    }
+
+    public async findPresenceByUserAndTeacherAndTime(userId: number, teacherId: number, startsAt: Date, endsAt: Date): Promise<Presence | null> {
+        const presence = await this.prisma.presences.findFirst({
+            where: {
+                userId: userId,
+                teacherId: teacherId,
+                startsAt: {
+                    lte: endsAt,
+                },
+                endAt: {
+                    gte: startsAt,
+                }
+            },
+            include: {
+                user: true,
+                teacher: true
+            }
+        });
+
+        if (!presence) {
+            return null;
+        }
+
+        return Presence.Builder
+            .withId(presence.id)
+            .withUser(User.Builder
+                .withId(presence.user.id)
+                .withName(presence.user.name)
+                .withEmail(presence.user.email)
+                .build()
+            )
+            .withTeacher(Teacher.Builder
+                .withId(presence.teacher.id)
+                .withName(presence.teacher.name)
+                .withEmail(presence.teacher.email)
+                .build()
+            )
+            .withStartsAt(presence.startsAt)
+            .withEndsAt(presence.endAt)
+            .build();
+
     }
 }

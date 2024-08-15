@@ -5,6 +5,7 @@ import { UserRepository } from "src/repositories/user.repository";
 export type createUserProps = {
     name: string;
     email: string;
+    password: string;
 }
 
 @Injectable()
@@ -21,6 +22,7 @@ export class UserService {
         const user: User = User.Builder
             .withName(data.name)
             .withEmail(data.email)
+            .withPassword(data.password)
             .build();
 
         return await this.userRepository.create(user);
@@ -38,6 +40,16 @@ export class UserService {
 
     public async findUserByEmail(email: string): Promise<User> {
         const userExists: User | null = await this.userRepository.findByEmail(email);
+
+        if (!userExists) {
+            throw new HttpException("User not found.", HttpStatus.NOT_FOUND);
+        }
+
+        return userExists;
+    }
+
+    public async findUserByPassword(password: string): Promise<User> {
+        const userExists: User | null = await this.userRepository.findByPassword(password);
 
         if (!userExists) {
             throw new HttpException("User not found.", HttpStatus.NOT_FOUND);

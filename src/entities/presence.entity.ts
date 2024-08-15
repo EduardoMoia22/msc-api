@@ -11,6 +11,10 @@ export class Presence {
         private readonly endsAt: Date
     ) { }
 
+    public static isDuplicate(existingPresence: Presence, startsAt: Date, endsAt: Date): boolean {
+        return existingPresence.startsAt <= endsAt && existingPresence.endsAt >= startsAt;
+    }
+
     public get getId(): number {
         return this.id;
     }
