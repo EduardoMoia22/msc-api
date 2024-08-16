@@ -1,11 +1,11 @@
 import { PresenceBuilder } from "src/builders/presence.builder";
 import { Teacher } from "./teacher.entity";
-import { User } from "./user.entity";
+import { Student } from "./student.entity";
 
 export class Presence {
     constructor(
         private readonly id: number,
-        private readonly user: User,
+        private readonly student: Student,
         private readonly teacher: Teacher,
         private readonly startsAt: Date,
         private readonly endsAt: Date
@@ -19,8 +19,8 @@ export class Presence {
         return this.id;
     }
 
-    public get getUser(): User {
-        return this.user;
+    public get getStudent(): Student {
+        return this.student;
     }
 
     public get getTeacher(): Teacher {

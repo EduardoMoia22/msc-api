@@ -13,14 +13,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model Student {
   id        Int         @id @default(autoincrement())
   email     String      @unique
   name      String
   presences Presences[]
   password  String
 
-  @@map("tb_users")
+  @@map("tb_students")
 }
 
 model Teacher {
@@ -34,11 +34,11 @@ model Teacher {
 
 model Presences {
   id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
+  student   Student  @relation(fields: [studentId], references: [id])
+  studentId Int
   teacher   Teacher  @relation(fields: [teacherId], references: [id])
   teacherId Int
-  startsAt  DateTime 
+  startsAt  DateTime
   endAt     DateTime
 
   @@map("tb_presences")

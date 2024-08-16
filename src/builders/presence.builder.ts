@@ -1,10 +1,10 @@
 import { Presence } from "src/entities/presence.entity";
+import { Student } from "src/entities/student.entity";
 import { Teacher } from "src/entities/teacher.entity";
-import { User } from "src/entities/user.entity";
 
 export class PresenceBuilder {
     private id: number;
-    private user: User;
+    private student: Student;
     private teacher: Teacher;
     private startsAt: Date;
     private endsAt: Date;
@@ -14,8 +14,8 @@ export class PresenceBuilder {
         return this;
     }
 
-    public withUser(user: User): this {
-        this.user = user;
+    public withStudent(student: Student): this {
+        this.student = student;
         return this;
     }
 
@@ -35,6 +35,6 @@ export class PresenceBuilder {
     }
 
     public build(): Presence {
-        return new Presence(this.id, this.user, this.teacher, this.startsAt, this.endsAt);
+        return new Presence(this.id, this.student, this.teacher, this.startsAt, this.endsAt);
     }
 }

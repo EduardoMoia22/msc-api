@@ -1,6 +1,7 @@
-import { User } from "src/entities/user.entity";
+import { Student } from "src/entities/student.entity";
 
-export class UserBuilder {
+
+export class StudentBuilder {
     private id: number;
     private name: string;
     private email: string;
@@ -26,7 +27,7 @@ export class UserBuilder {
         return this;
     }
 
-    public build(): User {
-        return new User(this.id, this.name, this.email, this.password);
+    public build(): Student {
+        return new Student(this.id, this.name, this.email, this.password);
     }
 }

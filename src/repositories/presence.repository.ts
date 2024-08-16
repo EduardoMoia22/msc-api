@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/configs/prisma.service";
 import { Presence } from "src/entities/presence.entity";
+import { Student } from "src/entities/student.entity";
 import { Teacher } from "src/entities/teacher.entity";
-import { User } from "src/entities/user.entity";
 
 @Injectable()
 export class PresenceRepository {
@@ -11,23 +11,23 @@ export class PresenceRepository {
     public async create(presence: Presence): Promise<Presence> {
         const createPresence = await this.prisma.presences.create({
             data: {
-                userId: presence.getUser.getId,
+                studentId: presence.getStudent.getId,
                 teacherId: presence.getTeacher.getId,
                 startsAt: presence.getStartsAt,
                 endAt: presence.getEndsAt
             },
             include: {
-                user: true,
+                student: true,
                 teacher: true
             }
         });
 
         return Presence.Builder
             .withId(createPresence.id)
-            .withUser(User.Builder
-                .withId(createPresence.user.id)
-                .withName(createPresence.user.name)
-                .withEmail(createPresence.user.email)
+            .withStudent(Student.Builder
+                .withId(createPresence.student.id)
+                .withName(createPresence.student.name)
+                .withEmail(createPresence.student.email)
                 .build()
             )
             .withTeacher(Teacher.Builder
@@ -41,10 +41,10 @@ export class PresenceRepository {
             .build();
     }
 
-    public async findPresenceByUserAndTeacherAndTime(userId: number, teacherId: number, startsAt: Date, endsAt: Date): Promise<Presence | null> {
+    public async findPresenceByStudentAndTeacherAndTime(studentId: number, teacherId: number, startsAt: Date, endsAt: Date): Promise<Presence | null> {
         const presence = await this.prisma.presences.findFirst({
             where: {
-                userId: userId,
+                studentId: studentId,
                 teacherId: teacherId,
                 startsAt: {
                     lte: endsAt,
@@ -54,7 +54,7 @@ export class PresenceRepository {
                 }
             },
             include: {
-                user: true,
+                student: true,
                 teacher: true
             }
         });
@@ -65,10 +65,10 @@ export class PresenceRepository {
 
         return Presence.Builder
             .withId(presence.id)
-            .withUser(User.Builder
-                .withId(presence.user.id)
-                .withName(presence.user.name)
-                .withEmail(presence.user.email)
+            .withStudent(Student.Builder
+                .withId(presence.student.id)
+                .withName(presence.student.name)
+                .withEmail(presence.student.email)
                 .build()
             )
             .withTeacher(Teacher.Builder
