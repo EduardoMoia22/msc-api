@@ -5,11 +5,7 @@ import { Teacher } from "src/entities/teacher.entity";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { StudentService } from "./student.service";
 import { Student } from "src/entities/student.entity";
-
-export type createPresenceProps = {
-    password: string;
-    teacherId: string;
-}
+import { PresenceRequestDTO } from "src/DTOs/presence.dtos";
 
 @Injectable()
 export class PresenceService {
@@ -18,8 +14,8 @@ export class PresenceService {
         private readonly teacherService: TeacherService
     ) { }
 
-    public async createPresence(data: createPresenceProps): Promise<Presence> {
-        const student: Student = await this.studentService.findStudentByPassword(data.password);
+    public async createPresence(data: PresenceRequestDTO): Promise<Presence> {
+        const student: Student = await this.studentService.findStudentByPassword(data.studentPassword);
         const teacher: Teacher = await this.teacherService.findTeacherById(parseInt(data.teacherId));
 
         const now = new Date();

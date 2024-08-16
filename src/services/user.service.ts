@@ -1,19 +1,14 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from "@nestjs/common";
+import { UserRequestDTO } from "src/DTOs/user.dtos";
 import { User } from "src/entities/user.entity";
 import { UserRepository } from "src/repositories/user.repository";
 import { Utils } from "src/tools/utils.tool";
-
-export type createUserProps = {
-    name: string;
-    email: string;
-    password: string;
-}
 
 @Injectable()
 export class UserService {
     constructor(private readonly userRepository: UserRepository) { }
 
-    public async createUser(data: createUserProps): Promise<User> {
+    public async createUser(data: UserRequestDTO): Promise<User> {
         const userAlreadyExists: User | null = await this.userRepository.findByEmail(data.email);
 
         if (userAlreadyExists) {

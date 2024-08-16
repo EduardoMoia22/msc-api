@@ -1,18 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { StudentRequestDTO } from "src/DTOs/student.dtos";
 import { Student } from "src/entities/student.entity";
 import { StudentRepository } from "src/repositories/student.repository";
 
-export type createStudentProps = {
-    name: string;
-    email: string;
-    password: string;
-}
 
 @Injectable()
 export class StudentService {
     constructor(private readonly studentRepository: StudentRepository) { }
 
-    public async createStudent(data: createStudentProps): Promise<Student> {
+    public async createStudent(data: StudentRequestDTO): Promise<Student> {
         const studentExists: Student | null = await this.studentRepository.findByEmail(data.email);
 
         if (studentExists) {
