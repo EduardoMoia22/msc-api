@@ -26,10 +26,17 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Configuration
+
+Create a new .env file if you don't already have one and insert your database connection URL into it. Example: DATABASE_URL="postgresql://admin:admin@localhost:5432/msc"
+
 ## Installation
 
 ```bash
 $ npm install
+$ cd docker
+$ docker compose up -d
+$ npx prisma db push
 ```
 
 ## Running the app
