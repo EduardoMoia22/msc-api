@@ -41,4 +41,8 @@ export class TeacherService {
 
         return teacherExists;
     }
+
+    public async findAllTeachers(): Promise<Teacher[]>{
+        return await this.teacherRepository.findAll();
+    }
 }

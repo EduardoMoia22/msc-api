@@ -56,4 +56,18 @@ export class TeacherRepository {
             .withEmail(teacher.email)
             .build();
     }
+
+    public async findAll(): Promise<Teacher[]> {
+        const teachers = await this.prisma.teacher.findMany();
+
+        return Promise.all(
+            teachers.map(async (teacher) => {
+                return Teacher.Builder
+                    .withId(teacher.id)
+                    .withName(teacher.name)
+                    .withEmail(teacher.email)
+                    .build();
+            }),
+        );
+    }
 }

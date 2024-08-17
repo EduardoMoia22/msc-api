@@ -38,4 +38,21 @@ export class TeacherController {
 
         return TeacherResponseDTO.fromEntity(teacher);
     }
+    
+    @UseGuards(AuthGuard)
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({ summary: 'Listar todos os professores' })
+    @ApiResponse({ status: 200, description: 'Ok', type: Array<TeacherResponseDTO> })
+    @ApiResponse({ status: 400, description: 'Bad Request.' })
+    @ApiResponse({ status: 401, description: 'Unauthorized.' })
+    @Get()
+    public async findAllTeachers(): Promise<TeacherResponseDTO[]> {
+        const teachers: Teacher[] = await this.teacherService.findAllTeachers();
+
+        return Promise.all(
+            teachers.map(async (teacher: Teacher) => {
+                return TeacherResponseDTO.fromEntity(teacher);
+            })
+        );
+    }
 }
