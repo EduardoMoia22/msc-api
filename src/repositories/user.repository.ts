@@ -41,4 +41,19 @@ export class UserRepository {
             .withPassword(user.password)
             .build()
     }
+
+    public async findAll(): Promise<User[]> {
+        const users = await this.prisma.user.findMany();
+
+        return Promise.all(
+            users.map((user) => {
+                return User.Builder
+                    .withId(user.id)
+                    .withName(user.name)
+                    .withEmail(user.email)
+                    .withPassword(user.password)
+                    .build()
+            })
+        );
+    }
 }
