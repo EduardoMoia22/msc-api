@@ -1,8 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/configs/prisma.service";
 import { Presence } from "src/entities/presence.entity";
-import { Student } from "src/entities/student.entity";
-import { Teacher } from "src/entities/teacher.entity";
+import { PresenceMapper } from "src/mappers/presence.mapper";
 
 @Injectable()
 export class PresenceRepository {
@@ -22,23 +21,7 @@ export class PresenceRepository {
             }
         });
 
-        return Presence.Builder
-            .withId(createPresence.id)
-            .withStudent(Student.Builder
-                .withId(createPresence.student.id)
-                .withName(createPresence.student.name)
-                .withEmail(createPresence.student.email)
-                .build()
-            )
-            .withTeacher(Teacher.Builder
-                .withId(createPresence.teacher.id)
-                .withName(createPresence.teacher.name)
-                .withEmail(createPresence.teacher.email)
-                .build()
-            )
-            .withStartsAt(createPresence.startsAt)
-            .withEndsAt(createPresence.endAt)
-            .build();
+        return PresenceMapper.prismaToEntity(createPresence);
     }
 
     public async findPresenceByStudentAndTeacherAndTime(studentId: number, teacherId: number, startsAt: Date, endsAt: Date): Promise<Presence | null> {
@@ -63,23 +46,6 @@ export class PresenceRepository {
             return null;
         }
 
-        return Presence.Builder
-            .withId(presence.id)
-            .withStudent(Student.Builder
-                .withId(presence.student.id)
-                .withName(presence.student.name)
-                .withEmail(presence.student.email)
-                .build()
-            )
-            .withTeacher(Teacher.Builder
-                .withId(presence.teacher.id)
-                .withName(presence.teacher.name)
-                .withEmail(presence.teacher.email)
-                .build()
-            )
-            .withStartsAt(presence.startsAt)
-            .withEndsAt(presence.endAt)
-            .build();
-
+        return PresenceMapper.prismaToEntity(presence);
     }
 }

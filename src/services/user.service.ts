@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from "@nestjs/common";
 import { UserRequestDTO } from "src/DTOs/user.dtos";
 import { User } from "src/entities/user.entity";
+import { UserMapper } from "src/mappers/user.mapper";
 import { UserRepository } from "src/repositories/user.repository";
 import { Utils } from "src/tools/utils.tool";
 
@@ -17,11 +18,10 @@ export class UserService {
 
         const hashedPassword: string = await Utils.hashPassword(data.password);
 
-        const user: User = User.Builder
-            .withName(data.name)
-            .withEmail(data.email)
-            .withPassword(hashedPassword)
-            .build();
+        const user: User = UserMapper.requestDtoToEntity({
+            password: hashedPassword,
+            ...data
+        });
 
         return this.userRepository.create(user);
     }
@@ -37,7 +37,7 @@ export class UserService {
     }
 
     public async findUserByEmail(email: string): Promise<User> {
-        return this.getUserByEmail(email);  // Lança exceção se não encontrar o usuário
+        return this.getUserByEmail(email);
     }
 
     public async signIn(email: string, password: string): Promise<User> {

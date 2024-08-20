@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { StudentRequestDTO } from "src/DTOs/student.dtos";
 import { Student } from "src/entities/student.entity";
+import { StudentMapper } from "src/mappers/Student.mapper";
 import { StudentRepository } from "src/repositories/student.repository";
 
 
@@ -15,11 +16,7 @@ export class StudentService {
             throw new HttpException("student already exists", HttpStatus.NOT_FOUND);
         }
 
-        const student: Student = Student.Builder
-            .withName(data.name)
-            .withEmail(data.email)
-            .withPassword(data.password)
-            .build();
+        const student: Student = StudentMapper.requestDtoToEntity(data);
 
         return await this.studentRepository.create(student);
     }

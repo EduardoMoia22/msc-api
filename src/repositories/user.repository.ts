@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/configs/prisma.service";
 import { User } from "src/entities/user.entity";
+import { UserMapper } from "src/mappers/user.mapper";
 
 @Injectable()
 export class UserRepository {
@@ -15,12 +16,7 @@ export class UserRepository {
             }
         });
 
-        return User.Builder
-            .withId(createUser.id)
-            .withName(createUser.name)
-            .withEmail(createUser.email)
-            .withPassword(createUser.password)
-            .build()
+        return UserMapper.prismaToEntity(createUser);
     }
 
     public async findByEmail(email: string): Promise<User | null> {
@@ -34,12 +30,7 @@ export class UserRepository {
             return null;
         }
 
-        return User.Builder
-            .withId(user.id)
-            .withName(user.name)
-            .withEmail(user.email)
-            .withPassword(user.password)
-            .build()
+        return UserMapper.prismaToEntity(user);
     }
 
     public async findAll(): Promise<User[]> {
@@ -47,12 +38,7 @@ export class UserRepository {
 
         return Promise.all(
             users.map((user) => {
-                return User.Builder
-                    .withId(user.id)
-                    .withName(user.name)
-                    .withEmail(user.email)
-                    .withPassword(user.password)
-                    .build()
+                return UserMapper.prismaToEntity(user);
             })
         );
     }
