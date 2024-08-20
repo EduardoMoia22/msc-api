@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/configs/prisma.service";
 import { Teacher } from "src/entities/teacher.entity";
+import { TeacherMapper } from "src/mappers/teacher.mapper";
 
 @Injectable()
 export class TeacherRepository {
@@ -14,11 +15,7 @@ export class TeacherRepository {
             }
         });
 
-        return Teacher.Builder
-            .withId(createTeacher.id)
-            .withName(createTeacher.name)
-            .withEmail(createTeacher.email)
-            .build();
+        return TeacherMapper.prismaToEntity(createTeacher);
     }
 
     public async findById(id: number): Promise<Teacher | null> {
@@ -32,11 +29,7 @@ export class TeacherRepository {
             return null;
         }
 
-        return Teacher.Builder
-            .withId(teacher.id)
-            .withName(teacher.name)
-            .withEmail(teacher.email)
-            .build();
+        return TeacherMapper.prismaToEntity(teacher);
     }
 
     public async findByEmail(email: string): Promise<Teacher | null> {
@@ -50,11 +43,7 @@ export class TeacherRepository {
             return null;
         }
 
-        return Teacher.Builder
-            .withId(teacher.id)
-            .withName(teacher.name)
-            .withEmail(teacher.email)
-            .build();
+        return TeacherMapper.prismaToEntity(teacher);
     }
 
     public async findAll(): Promise<Teacher[]> {
@@ -62,11 +51,7 @@ export class TeacherRepository {
 
         return Promise.all(
             teachers.map(async (teacher) => {
-                return Teacher.Builder
-                    .withId(teacher.id)
-                    .withName(teacher.name)
-                    .withEmail(teacher.email)
-                    .build();
+                return TeacherMapper.prismaToEntity(teacher);
             }),
         );
     }

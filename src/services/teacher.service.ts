@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { TeacherRequestDTO } from "src/DTOs/teacher.dtos";
 import { Teacher } from "src/entities/teacher.entity";
+import { TeacherMapper } from "src/mappers/teacher.mapper";
 import { TeacherRepository } from "src/repositories/teacher.repository";
 
 @Injectable()
@@ -14,10 +15,7 @@ export class TeacherService {
             throw new HttpException("Teacher already exists.", HttpStatus.NOT_FOUND);
         }
 
-        const teacher: Teacher = Teacher.Builder
-            .withName(data.name)
-            .withEmail(data.email)
-            .build();
+        const teacher: Teacher = TeacherMapper.requestDtoToEntity(data);
 
         return await this.teacherRepository.create(teacher);
     }
@@ -42,7 +40,7 @@ export class TeacherService {
         return teacherExists;
     }
 
-    public async findAllTeachers(): Promise<Teacher[]>{
+    public async findAllTeachers(): Promise<Teacher[]> {
         return await this.teacherRepository.findAll();
     }
 }
