@@ -75,4 +75,19 @@ export class StudentRepository {
             .withEmail(student.email)
             .build();
     }
+
+    public async findAll(): Promise<Student[]> {
+        const students = await this.prisma.student.findMany();
+
+        return Promise.all(
+            students.map(async (student) => {
+                return Student.Builder
+                    .withId(student.id)
+                    .withName(student.name)
+                    .withEmail(student.email)
+                    .withPassword(student.password)
+                    .build();
+            })
+        );
+    }
 }

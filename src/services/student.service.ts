@@ -53,4 +53,8 @@ export class StudentService {
 
         return studentExists;
     }
+
+    public async findAllStudents(): Promise<Student[]> {
+        return await this.studentRepository.findAll();
+    }
 }

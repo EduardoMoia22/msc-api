@@ -38,4 +38,19 @@ export class StudentController {
 
         return StudentResponseDTO.fromEntity(student);
     }
+
+    @UseGuards(AuthGuard)
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({ summary: 'Buscar todos os alunos' })
+    @ApiResponse({ status: 200, description: 'Ok', type: StudentResponseDTO, isArray: true })
+    @ApiResponse({ status: 400, description: 'Bad Request.' })
+    @ApiResponse({ status: 401, description: 'Unauthorized.' })
+    @Get()
+    public async findAllStudents(): Promise<StudentResponseDTO[]> {
+        const students: Student[] = await this.studentService.findAllStudents();
+
+        return Promise.all(
+            students.map(StudentResponseDTO.fromEntity)
+        );
+    }
 }
