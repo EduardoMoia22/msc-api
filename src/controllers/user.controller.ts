@@ -2,7 +2,6 @@ import { Body, Controller, HttpCode, HttpStatus, Post, UseGuards } from "@nestjs
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { UserRequestDTO, UserResponseDTO } from "src/DTOs/user.dtos";
 import { User } from "src/entities/user.entity";
-import { AuthGuard } from "src/guards/auth.guard";
 import { UserService } from "src/services/user.service";
 
 @ApiBearerAuth()
@@ -11,7 +10,7 @@ import { UserService } from "src/services/user.service";
 export class UserController {
     constructor(private readonly userService: UserService) { }
 
-    @UseGuards(AuthGuard)
+    // @UseGuards(AuthGuard)
     @HttpCode(HttpStatus.OK)
     @ApiOperation({ summary: 'Criar usuário' })
     @ApiResponse({ status: 200, description: 'Ok', type: UserResponseDTO })

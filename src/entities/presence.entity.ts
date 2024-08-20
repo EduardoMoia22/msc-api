@@ -1,12 +1,14 @@
 import { PresenceBuilder } from "src/builders/presence.builder";
 import { Teacher } from "./teacher.entity";
 import { Student } from "./student.entity";
+import { Class } from "./class.entity";
 
 export class Presence {
     constructor(
         private readonly id: number,
         private readonly student: Student,
         private readonly teacher: Teacher,
+        private readonly classEntity: Class,
         private readonly startsAt: Date,
         private readonly endsAt: Date
     ) { }
@@ -25,6 +27,10 @@ export class Presence {
 
     public get getTeacher(): Teacher {
         return this.teacher;
+    }
+
+    public get getClass(): Class {
+        return this.classEntity;
     }
 
     public get getStartsAt(): Date {

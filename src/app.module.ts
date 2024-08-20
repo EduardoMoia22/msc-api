@@ -5,9 +5,10 @@ import { PresenceModule } from './modules/presence.module';
 import { StudentModule } from './modules/student.module';
 import { UserModule } from './modules/user.module';
 import { AuthModule } from './modules/auth.module';
+import { ClassModule } from './modules/class.module';
 
 @Module({
-  imports: [DataModule, StudentModule, TeacherModule, PresenceModule, UserModule, AuthModule],
+  imports: [DataModule, StudentModule, TeacherModule, PresenceModule, UserModule, AuthModule, ClassModule],
   controllers: [],
   providers: [],
 })

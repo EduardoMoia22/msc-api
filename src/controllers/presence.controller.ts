@@ -1,7 +1,6 @@
 import { Body, Controller, HttpCode, HttpStatus, Post, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { PresenceRequestDTO, PresenceResponseDTO } from "src/DTOs/presence.dtos";
-import { Presence } from "src/entities/presence.entity";
 import { AuthGuard } from "src/guards/auth.guard";
 import { PresenceService } from "src/services/presence.service";
 
@@ -19,9 +18,9 @@ export class PresenceController {
     @ApiResponse({ status: 401, description: 'Unauthorized.' })
     @ApiResponse({ status: 409, description: 'Conflict.' })
     @Post()
-    public async createPresence(@Body() body: PresenceRequestDTO): Promise<PresenceResponseDTO> {
-        const presence: Presence = await this.presenceService.createPresence(body);
+    public async createPresence(@Body() body: PresenceRequestDTO): Promise<void> {
+        // const presence: Presence = await this.presenceService.createPresence(body);
 
-        return PresenceResponseDTO.fromEntity(presence);
+        // return PresenceResponseDTO.fromEntity(presence);
     }
 }

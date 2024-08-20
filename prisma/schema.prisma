@@ -14,11 +14,12 @@ datasource db {
 }
 
 model Student {
-  id        Int         @id @default(autoincrement())
-  email     String      @unique
-  name      String
-  presences Presences[]
-  password  String
+  id            Int             @id @default(autoincrement())
+  email         String          @unique
+  name          String
+  presences     Presences[]
+  password      String
+  ClassStudents ClassStudents[]
 
   @@map("tb_students")
 }
@@ -28,18 +29,21 @@ model Teacher {
   name      String
   email     String      @unique
   presences Presences[]
+  Class     Class[]
 
   @@map("tb_teachers")
 }
 
 model Presences {
   id        Int      @id @default(autoincrement())
-  student   Student  @relation(fields: [studentId], references: [id])
-  studentId Int
-  teacher   Teacher  @relation(fields: [teacherId], references: [id])
-  teacherId Int
+  classId   Int
   startsAt  DateTime
   endAt     DateTime
+  class     Class    @relation(fields: [classId], references: [id])
+  student   Student? @relation(fields: [studentId], references: [id])
+  studentId Int?
+  teacher   Teacher? @relation(fields: [teacherId], references: [id])
+  teacherId Int?
 
   @@map("tb_presences")
 }
@@ -51,4 +55,25 @@ model User {
   password String
 
   @@map("tb_users")
+}
+
+model Class {
+  id            Int             @id @default(autoincrement())
+  teacher       Teacher         @relation(fields: [teacherId], references: [id])
+  teacherId     Int
+  startsAt      DateTime
+  endsAt        DateTime
+  ClassStudents ClassStudents[]
+  Presences     Presences[]
+
+  @@map("tb_classes")
+}
+
+model ClassStudents {
+  class     Class   @relation(fields: [classId], references: [id])
+  classId   Int
+  student   Student @relation(fields: [studentId], references: [id])
+  studentId Int
+
+  @@id([classId, studentId])
 }

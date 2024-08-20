@@ -4,7 +4,7 @@ import { StudentService } from "src/services/student.service";
 
 @Module({
     controllers: [StudentController],
-    providers: [StudentService]
+    providers: [StudentService],
+    exports: [StudentService]
 })
-export class StudentModule {
-}
+export class StudentModule {}
