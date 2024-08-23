@@ -1,6 +1,7 @@
 import { PrismaService } from "src/configs/prisma.service";
 import { Injectable } from "@nestjs/common";
 import { Student } from "src/entities/student.entity";
+import { StudentMapper } from "src/mappers/Student.mapper";
 
 @Injectable()
 export class StudentRepository {
@@ -14,12 +15,7 @@ export class StudentRepository {
             }
         });
 
-        return Student.Builder
-            .withId(createStudent.id)
-            .withName(createStudent.name)
-            .withEmail(createStudent.email)
-            .withPassword(createStudent.password)
-            .build();
+        return StudentMapper.prismaToEntity(createStudent);
     }
 
     public async findById(id: number): Promise<Student | null> {
@@ -33,11 +29,7 @@ export class StudentRepository {
             return null;
         }
 
-        return Student.Builder
-            .withId(student.id)
-            .withName(student.name)
-            .withEmail(student.email)
-            .build();
+        return StudentMapper.prismaToEntity(student);
     }
 
     public async findByEmail(email: string): Promise<Student | null> {
@@ -51,11 +43,7 @@ export class StudentRepository {
             return null;
         }
 
-        return Student.Builder
-            .withId(student.id)
-            .withName(student.name)
-            .withEmail(student.email)
-            .build();
+        return StudentMapper.prismaToEntity(student);
     }
 
     public async findByPassword(password: string): Promise<Student | null> {
@@ -69,11 +57,7 @@ export class StudentRepository {
             return null;
         }
 
-        return Student.Builder
-            .withId(student.id)
-            .withName(student.name)
-            .withEmail(student.email)
-            .build();
+        return StudentMapper.prismaToEntity(student);
     }
 
     public async findAll(): Promise<Student[]> {
@@ -81,12 +65,7 @@ export class StudentRepository {
 
         return Promise.all(
             students.map(async (student) => {
-                return Student.Builder
-                    .withId(student.id)
-                    .withName(student.name)
-                    .withEmail(student.email)
-                    .withPassword(student.password)
-                    .build();
+                return StudentMapper.prismaToEntity(student);
             })
         );
     }
