@@ -2,10 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import * as compression from 'compression';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+  app.use(compression());
+  app.use(helmet());
   const config = new DocumentBuilder()
     .setTitle('Msc API')
     .setDescription('')
