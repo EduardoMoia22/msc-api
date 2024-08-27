@@ -8,11 +8,7 @@ export class StudentRepository {
     constructor(protected prisma: PrismaService) { }
     public async create(student: Student): Promise<Student> {
         const createStudent = await this.prisma.student.create({
-            data: {
-                name: student.getName,
-                email: student.getEmail,
-                password: student.getPassword
-            }
+            data: StudentMapper.entityToPrisma(student)
         });
 
         return StudentMapper.prismaToEntity(createStudent);
@@ -50,6 +46,20 @@ export class StudentRepository {
         const student = await this.prisma.student.findFirst({
             where: {
                 password: password
+            }
+        });
+
+        if (!student) {
+            return null;
+        }
+
+        return StudentMapper.prismaToEntity(student);
+    }
+
+    public async findByCPF(cpf: string): Promise<Student | null> {
+        const student = await this.prisma.student.findUnique({
+            where: {
+                cpf: cpf
             }
         });
 

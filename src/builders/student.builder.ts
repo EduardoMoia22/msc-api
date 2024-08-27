@@ -5,6 +5,7 @@ export class StudentBuilder {
     private id: number;
     private name: string;
     private email: string;
+    private cpf: string;
     private password: string;
 
     public withId(id: number): this {
@@ -22,12 +23,17 @@ export class StudentBuilder {
         return this;
     }
 
+    public withCPF(cpf: string): this {
+        this.cpf = cpf;
+        return this;
+    }
+
     public withPassword(password: string): this {
         this.password = password;
         return this;
     }
 
     public build(): Student {
-        return new Student(this.id, this.name, this.email, this.password);
+        return new Student(this.id, this.name, this.email, this.cpf, this.password);
     }
 }

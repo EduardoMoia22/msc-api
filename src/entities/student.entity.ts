@@ -5,6 +5,7 @@ export class Student {
         private readonly id: number,
         private readonly name: string,
         private readonly email: string,
+        private readonly cpf: string,
         private readonly password: string,
     ) { }
 
@@ -22,6 +23,10 @@ export class Student {
 
     public get getEmail(): string {
         return this.email;
+    }
+
+    public get getCPF(): string {
+        return this.cpf;
     }
 
     public get getPassword(): string {

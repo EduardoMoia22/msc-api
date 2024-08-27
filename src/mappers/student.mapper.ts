@@ -7,6 +7,7 @@ export class StudentMapper {
         return Student.Builder
             .withName(data.name)
             .withEmail(data.email)
+            .withCPF(data.cpf)
             .withPassword(data.password)
             .build();
     }
@@ -16,6 +17,7 @@ export class StudentMapper {
             .withId(data.id)
             .withName(data.name)
             .withEmail(data.email)
+            .withCPF(data.cpf)
             .withPassword(data.password)
             .build();
     }
@@ -24,6 +26,7 @@ export class StudentMapper {
         return {
             name: data.getName,
             email: data.getEmail,
+            cpf: data.getCPF,
             password: data.getPassword
         }
     }

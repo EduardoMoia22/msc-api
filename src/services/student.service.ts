@@ -10,9 +10,10 @@ export class StudentService {
     constructor(private readonly studentRepository: StudentRepository) { }
 
     public async createStudent(data: StudentRequestDTO): Promise<Student> {
-        const studentExists: Student | null = await this.studentRepository.findByEmail(data.email);
+        const studentEmailExists: Student | null = await this.studentRepository.findByEmail(data.email);
+        const studentCPFExists: Student | null = await this.studentRepository.findByCPF(data.cpf);
 
-        if (studentExists) {
+        if (studentEmailExists || studentCPFExists) {
             throw new HttpException("student already exists", HttpStatus.NOT_FOUND);
         }
 
@@ -43,6 +44,16 @@ export class StudentService {
 
     public async findStudentByPassword(password: string): Promise<Student> {
         const studentExists: Student | null = await this.studentRepository.findByPassword(password);
+
+        if (!studentExists) {
+            throw new HttpException("Student not found.", HttpStatus.NOT_FOUND);
+        }
+
+        return studentExists;
+    }
+
+    public async findStudentByCPF(cpf: string): Promise<Student> {
+        const studentExists: Student | null = await this.studentRepository.findByCPF(cpf);
 
         if (!studentExists) {
             throw new HttpException("Student not found.", HttpStatus.NOT_FOUND);
