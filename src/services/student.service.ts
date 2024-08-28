@@ -3,6 +3,7 @@ import { StudentRequestDTO } from "src/DTOs/student.dtos";
 import { Student } from "src/entities/student.entity";
 import { StudentMapper } from "src/mappers/Student.mapper";
 import { StudentRepository } from "src/repositories/student.repository";
+import { Utils } from "src/tools/utils.tool";
 
 
 @Injectable()
@@ -18,6 +19,14 @@ export class StudentService {
         }
 
         const student: Student = StudentMapper.requestDtoToEntity(data);
+
+        const currentDatetime: Date = Utils.getCurrentDateTimeBR();
+        student.setEntryDate = currentDatetime;
+
+        const lastStudent: Student | null = await this.studentRepository.findLastStudentByEntryYear(currentDatetime.getFullYear().toString());
+        student.generateRM(lastStudent);
+
+        console.log(student.getRM);
 
         return await this.studentRepository.create(student);
     }
