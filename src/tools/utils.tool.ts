@@ -1,3 +1,4 @@
+import { tzDate } from '@formkit/tempo';
 import * as bcrypt from 'bcrypt';
 
 export class Utils {
@@ -11,5 +12,9 @@ export class Utils {
     public static async checkPassword(plainTextPassword: string, hashedPassword: string): Promise<boolean> {
         const isMatch = await bcrypt.compare(plainTextPassword, hashedPassword);
         return isMatch;
+    }
+
+    public static getCurrentDateTimeBR(): Date {
+        return tzDate(new Date(), "America/Sao_Paulo");
     }
 }

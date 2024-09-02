@@ -79,4 +79,23 @@ export class StudentRepository {
             })
         );
     }
+
+    public async findLastStudentByEntryYear(entryYear: string): Promise<Student | null> {
+        const lastStudent = await this.prisma.student.findFirst({
+            where: {
+                rm: {
+                    startsWith: entryYear
+                }
+            },
+            orderBy: {
+                rm: 'desc'
+            }
+        });
+
+        if (!lastStudent) {
+            return null;
+        }
+
+        return StudentMapper.prismaToEntity(lastStudent);
+    }
 }
