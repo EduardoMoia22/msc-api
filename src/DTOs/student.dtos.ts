@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty } from "class-validator";
+import { IsEmail, IsNotEmpty, Length } from "class-validator";
 import { Student } from "src/entities/student.entity";
 
 export class StudentRequestDTO {
@@ -16,16 +16,20 @@ export class StudentRequestDTO {
     @IsEmail()
     public email: string;
 
-    @ApiProperty({ description: 'Senha do aluno' })
+    @ApiProperty({ description: 'CPF do aluno' })
     @IsNotEmpty({
-        message: "Senha é obrigatório"
+        message: "CPF é obrigatório"
     })
-    public password: string;
+    @Length(11, 11)
+    public cpf: string;
 }
 
 export class StudentResponseDTO {
     @ApiProperty({ description: 'Id do aluno' })
     public readonly id: number;
+
+    @ApiProperty({ description: 'Rm do aluno' })
+    public readonly rm: string;
 
     @ApiProperty({ description: 'Nome do aluno' })
     public readonly name: string;
@@ -33,17 +37,29 @@ export class StudentResponseDTO {
     @ApiProperty({ description: 'Email do aluno' })
     public readonly email: string;
 
+    @ApiProperty({ description: 'CPF do aluno' })
+    public readonly cpf: string;
+
+    @ApiProperty({ description: 'Data de cadastro do aluno' })
+    public readonly entryDate: Date;
+
     private constructor(
         id: number,
+        rm: string,
         name: string,
         email: string,
+        cpf: string,
+        entryDate: Date
     ) {
         this.id = id;
+        this.rm = rm;
         this.name = name;
         this.email = email;
+        this.cpf = cpf;
+        this.entryDate = entryDate;
     }
 
     static fromEntity(student: Student): StudentResponseDTO {
-        return new StudentResponseDTO(student.getId, student.getName, student.getEmail);
+        return new StudentResponseDTO(student.getId, student.getRM, student.getName, student.getEmail, student.getCPF, student.getEntryDate);
     }
 }

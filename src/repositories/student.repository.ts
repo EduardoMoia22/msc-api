@@ -8,11 +8,7 @@ export class StudentRepository {
     constructor(protected prisma: PrismaService) { }
     public async create(student: Student): Promise<Student> {
         const createStudent = await this.prisma.student.create({
-            data: {
-                name: student.getName,
-                email: student.getEmail,
-                password: student.getPassword
-            }
+            data: StudentMapper.entityToPrisma(student)
         });
 
         return StudentMapper.prismaToEntity(createStudent);
@@ -60,6 +56,20 @@ export class StudentRepository {
         return StudentMapper.prismaToEntity(student);
     }
 
+    public async findByCPF(cpf: string): Promise<Student | null> {
+        const student = await this.prisma.student.findUnique({
+            where: {
+                cpf: cpf
+            }
+        });
+
+        if (!student) {
+            return null;
+        }
+
+        return StudentMapper.prismaToEntity(student);
+    }
+
     public async findAll(): Promise<Student[]> {
         const students = await this.prisma.student.findMany();
 
@@ -68,5 +78,24 @@ export class StudentRepository {
                 return StudentMapper.prismaToEntity(student);
             })
         );
+    }
+
+    public async findLastStudentByEntryYear(entryYear: string): Promise<Student | null> {
+        const lastStudent = await this.prisma.student.findFirst({
+            where: {
+                rm: {
+                    startsWith: entryYear
+                }
+            },
+            orderBy: {
+                rm: 'desc'
+            }
+        });
+
+        if (!lastStudent) {
+            return null;
+        }
+
+        return StudentMapper.prismaToEntity(lastStudent);
     }
 }

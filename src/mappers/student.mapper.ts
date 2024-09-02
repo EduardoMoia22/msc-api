@@ -7,24 +7,30 @@ export class StudentMapper {
         return Student.Builder
             .withName(data.name)
             .withEmail(data.email)
-            .withPassword(data.password)
+            .withCPF(data.cpf)
             .build();
     }
 
     public static prismaToEntity(data: RawStudent): Student {
         return Student.Builder
             .withId(data.id)
+            .withRM(data.rm)
             .withName(data.name)
             .withEmail(data.email)
+            .withCPF(data.cpf)
+            .withEntryDate(data.entryDate)
             .withPassword(data.password)
             .build();
     }
 
     public static entityToPrisma(data: Student): Omit<RawStudent, "id"> {
         return {
+            rm: data.getRM,
             name: data.getName,
             email: data.getEmail,
-            password: data.getPassword
+            cpf: data.getCPF,
+            entryDate: data.getEntryDate,
+            password: data.getRM
         }
     }
 }

@@ -16,7 +16,10 @@ datasource db {
 model Student {
   id        Int         @id @default(autoincrement())
   email     String      @unique
+  cpf       String      @unique
   name      String
+  rm        String      @unique
+  entryDate DateTime   
   presences Presences[]
   password  String
 

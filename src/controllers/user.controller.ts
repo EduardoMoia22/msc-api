@@ -11,7 +11,7 @@ import { UserService } from "src/services/user.service";
 export class UserController {
     constructor(private readonly userService: UserService) { }
 
-    @UseGuards(AuthGuard)
+    // @UseGuards(AuthGuard)
     @HttpCode(HttpStatus.OK)
     @ApiOperation({ summary: 'Criar usuário' })
     @ApiResponse({ status: 200, description: 'Ok', type: UserResponseDTO })

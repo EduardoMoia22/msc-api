@@ -19,8 +19,9 @@ export class UserService {
         const hashedPassword: string = await Utils.hashPassword(data.password);
 
         const user: User = UserMapper.requestDtoToEntity({
+            name: data.name,
+            email: data.email,
             password: hashedPassword,
-            ...data
         });
 
         return this.userRepository.create(user);
