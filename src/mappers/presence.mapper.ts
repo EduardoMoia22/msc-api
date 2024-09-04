@@ -1,7 +1,7 @@
 import { PresenceRequestDTO } from "DTOs/presence.dtos";
 import { Presence } from "entities/presence.entity";
 import { Prisma } from "@prisma/client";
-import { StudentMapper } from "./Student.mapper";
+import { StudentMapper } from "./student.mapper";
 import { TeacherMapper } from "./teacher.mapper";
 import { Presences as RawPresence } from "@prisma/client";
 
