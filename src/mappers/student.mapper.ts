@@ -1,5 +1,5 @@
-import { StudentRequestDTO } from "src/DTOs/student.dtos";
-import { Student } from "src/entities/student.entity";
+import { StudentRequestDTO } from "DTOs/student.dtos";
+import { Student } from "entities/student.entity";
 import { Student as RawStudent } from "@prisma/client";
 
 export class StudentMapper {
