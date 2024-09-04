@@ -1,0 +1,27 @@
+# .github/workflows/deploy.yml
+name: Deploy to Railway
+
+on:
+  push:
+    branches:
+      - main
+      - dev-homolog  # ou outra branch que você use para deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.16.0'  # ou a versão que você está usando
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Prisma Migrate
+        run: npx prisma migrate deploy
