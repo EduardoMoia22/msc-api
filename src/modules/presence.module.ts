@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
-import { PresenceController } from "src/controllers/presence.controller";
-import { PresenceService } from "src/services/presence.service";
-import { StudentService } from "src/services/student.service";
-import { TeacherService } from "src/services/teacher.service";
+import { PresenceController } from "controllers/presence.controller";
+import { PresenceService } from "services/presence.service";
+import { StudentService } from "services/student.service";
+import { TeacherService } from "services/teacher.service";
 
 @Module({
     controllers: [PresenceController],

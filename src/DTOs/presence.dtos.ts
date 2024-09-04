@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty } from "class-validator";
 import { UserResponseDTO } from "./user.dtos";
 import { TeacherResponseDTO } from "./teacher.dtos";
-import { Presence } from "src/entities/presence.entity";
+import { Presence } from "entities/presence.entity";
 import { StudentResponseDTO } from "./student.dtos";
 
 export class PresenceRequestDTO {

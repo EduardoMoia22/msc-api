@@ -1,4 +1,4 @@
-import { UserBuilder } from "src/builders/user.builder";
+import { UserBuilder } from "builders/user.builder";
 
 export class User {
     constructor(

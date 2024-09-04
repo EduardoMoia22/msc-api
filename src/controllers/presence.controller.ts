@@ -1,9 +1,9 @@
 import { Body, Controller, HttpCode, HttpStatus, Post, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { PresenceRequestDTO, PresenceResponseDTO } from "src/DTOs/presence.dtos";
-import { Presence } from "src/entities/presence.entity";
-import { AuthGuard } from "src/guards/auth.guard";
-import { PresenceService } from "src/services/presence.service";
+import { PresenceRequestDTO, PresenceResponseDTO } from "DTOs/presence.dtos";
+import { Presence } from "entities/presence.entity";
+import { AuthGuard } from "guards/auth.guard";
+import { PresenceService } from "services/presence.service";
 
 @ApiBearerAuth()
 @ApiTags("Presença")

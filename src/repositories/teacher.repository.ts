@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { PrismaService } from "src/configs/prisma.service";
-import { Teacher } from "src/entities/teacher.entity";
-import { TeacherMapper } from "src/mappers/teacher.mapper";
+import { PrismaService } from "configs/prisma.service";
+import { Teacher } from "entities/teacher.entity";
+import { TeacherMapper } from "mappers/teacher.mapper";
 
 @Injectable()
 export class TeacherRepository {

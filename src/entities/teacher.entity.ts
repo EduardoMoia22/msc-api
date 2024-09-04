@@ -1,4 +1,4 @@
-import { TeacherBuilder } from "src/builders/teacher.builder";
+import { TeacherBuilder } from "builders/teacher.builder";
 
 export class Teacher{
     constructor(

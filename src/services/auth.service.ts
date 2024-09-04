@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { UserService } from "./user.service";
-import { User } from "src/entities/user.entity";
+import { User } from "entities/user.entity";
 import { JwtService } from "@nestjs/jwt";
 
 type Payload = {

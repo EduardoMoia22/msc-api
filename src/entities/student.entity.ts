@@ -1,4 +1,4 @@
-import { StudentBuilder } from "src/builders/student.builder";
+import { StudentBuilder } from "builders/student.builder";
 
 export class Student {
     constructor(

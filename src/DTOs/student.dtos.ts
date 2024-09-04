@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEmail, IsNotEmpty, Length } from "class-validator";
-import { Student } from "src/entities/student.entity";
+import { Student } from "entities/student.entity";
 
 export class StudentRequestDTO {
     @ApiProperty({ description: 'Nome do aluno' })

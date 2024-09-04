@@ -1,9 +1,9 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { TeacherRequestDTO, TeacherResponseDTO } from "src/DTOs/teacher.dtos";
-import { Teacher } from "src/entities/teacher.entity";
-import { AuthGuard } from "src/guards/auth.guard";
-import { TeacherService } from "src/services/teacher.service";
+import { TeacherRequestDTO, TeacherResponseDTO } from "DTOs/teacher.dtos";
+import { Teacher } from "entities/teacher.entity";
+import { AuthGuard } from "guards/auth.guard";
+import { TeacherService } from "services/teacher.service";
 
 @ApiBearerAuth()
 @ApiTags("Professor")

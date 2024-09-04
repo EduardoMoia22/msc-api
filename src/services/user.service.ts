@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from "@nestjs/common";
-import { UserRequestDTO } from "src/DTOs/user.dtos";
-import { User } from "src/entities/user.entity";
-import { UserMapper } from "src/mappers/user.mapper";
-import { UserRepository } from "src/repositories/user.repository";
-import { Utils } from "src/tools/utils.tool";
+import { UserRequestDTO } from "DTOs/user.dtos";
+import { User } from "entities/user.entity";
+import { UserMapper } from "mappers/user.mapper";
+import { UserRepository } from "repositories/user.repository";
+import { Utils } from "tools/utils.tool";
 
 @Injectable()
 export class UserService {

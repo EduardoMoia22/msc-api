@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { PrismaService } from "src/configs/prisma.service";
-import { Presence } from "src/entities/presence.entity";
-import { PresenceMapper } from "src/mappers/presence.mapper";
+import { PrismaService } from "configs/prisma.service";
+import { Presence } from "entities/presence.entity";
+import { PresenceMapper } from "mappers/presence.mapper";
 
 @Injectable()
 export class PresenceRepository {

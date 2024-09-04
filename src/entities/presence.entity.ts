@@ -1,4 +1,4 @@
-import { PresenceBuilder } from "src/builders/presence.builder";
+import { PresenceBuilder } from "builders/presence.builder";
 import { Teacher } from "./teacher.entity";
 import { Student } from "./student.entity";
 

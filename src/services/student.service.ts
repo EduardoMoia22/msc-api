@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { StudentRequestDTO } from "src/DTOs/student.dtos";
-import { Student } from "src/entities/student.entity";
-import { StudentMapper } from "src/mappers/Student.mapper";
-import { StudentRepository } from "src/repositories/student.repository";
-import { Utils } from "src/tools/utils.tool";
+import { StudentRequestDTO } from "DTOs/student.dtos";
+import { Student } from "entities/student.entity";
+import { StudentMapper } from "mappers/Student.mapper";
+import { StudentRepository } from "repositories/student.repository";
+import { Utils } from "tools/utils.tool";
 
 
 @Injectable()

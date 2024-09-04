@@ -1,4 +1,4 @@
-import { Student } from "src/entities/student.entity";
+import { Student } from "entities/student.entity";
 
 export class StudentBuilder {
     private id: number;

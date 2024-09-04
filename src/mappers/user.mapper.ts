@@ -1,5 +1,5 @@
-import { UserRequestDTO } from "src/DTOs/user.dtos";
-import { User } from "src/entities/user.entity";
+import { UserRequestDTO } from "DTOs/user.dtos";
+import { User } from "entities/user.entity";
 import { User as RawUser } from "@prisma/client";
 
 export class UserMapper {

@@ -1,11 +1,11 @@
-import { Presence } from "src/entities/presence.entity";
-import { PresenceRepository } from "src/repositories/presence.repository";
+import { Presence } from "entities/presence.entity";
+import { PresenceRepository } from "repositories/presence.repository";
 import { TeacherService } from "./teacher.service";
-import { Teacher } from "src/entities/teacher.entity";
+import { Teacher } from "entities/teacher.entity";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { StudentService } from "./student.service";
-import { Student } from "src/entities/student.entity";
-import { PresenceRequestDTO } from "src/DTOs/presence.dtos";
+import { Student } from "entities/student.entity";
+import { PresenceRequestDTO } from "DTOs/presence.dtos";
 
 @Injectable()
 export class PresenceService {

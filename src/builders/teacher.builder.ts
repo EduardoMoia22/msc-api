@@ -1,4 +1,4 @@
-import { Teacher } from "src/entities/teacher.entity";
+import { Teacher } from "entities/teacher.entity";
 
 export class TeacherBuilder{
     private id: number;

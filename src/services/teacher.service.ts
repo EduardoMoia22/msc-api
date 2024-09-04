@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { TeacherRequestDTO } from "src/DTOs/teacher.dtos";
-import { Teacher } from "src/entities/teacher.entity";
-import { TeacherMapper } from "src/mappers/teacher.mapper";
-import { TeacherRepository } from "src/repositories/teacher.repository";
+import { TeacherRequestDTO } from "DTOs/teacher.dtos";
+import { Teacher } from "entities/teacher.entity";
+import { TeacherMapper } from "mappers/teacher.mapper";
+import { TeacherRepository } from "repositories/teacher.repository";
 
 @Injectable()
 export class TeacherService {
