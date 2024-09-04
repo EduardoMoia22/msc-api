@@ -5,6 +5,8 @@ import { ValidationPipe } from '@nestjs/common';
 import * as compression from 'compression';
 import helmet from 'helmet';
 
+const port = process.env.PORT || 3000;
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(compression());
@@ -24,6 +26,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
   app.useGlobalPipes(new ValidationPipe());
-  await app.listen(3000);
+  await app.listen(port);
 }
 bootstrap();
