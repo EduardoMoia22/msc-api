@@ -50,6 +50,14 @@ export class Student {
         return this.cpf;
     }
 
+    public get getFormattedCpf(): string {
+        return this.formatCpf(this.cpf);
+    }
+
+    private formatCpf(cpf: string): string {
+        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    }
+
     public get getEntryDate(): Date {
         return this.entryDate;
     }
