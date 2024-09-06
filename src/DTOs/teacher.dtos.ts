@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty } from "class-validator";
+import { IsEmail, IsNotEmpty, Length } from "class-validator";
 import { Teacher } from "entities/teacher.entity";
 
 export class TeacherRequestDTO {
@@ -7,13 +7,14 @@ export class TeacherRequestDTO {
     @IsNotEmpty({
         message: "Nome é obrigatório"
     })
+    @Length(4, 256, { message: 'O nome deve ter no minimo 4 caracteres.' })
     public name: string;
 
     @ApiProperty({ description: 'Email do professor' })
     @IsNotEmpty({
         message: "Email é obrigatório"
     })
-    @IsEmail()
+    @IsEmail({}, { message: "Insira um email válido." })
     public email: string;
 }
 

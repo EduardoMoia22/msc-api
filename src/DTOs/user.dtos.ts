@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty } from "class-validator";
+import { IsEmail, IsNotEmpty, Length } from "class-validator";
 import { User } from "entities/user.entity";
 
 export class UserRequestDTO {
@@ -7,19 +7,21 @@ export class UserRequestDTO {
     @IsNotEmpty({
         message: "Nome é obrigatório."
     })
+    @Length(4, 256, { message: 'O nome deve ter no minimo 4 caracteres.' })
     public name: string;
 
     @ApiProperty({ description: 'Email do usuário' })
     @IsNotEmpty({
         message: "Email é obrigatório."
     })
-    @IsEmail()
+    @IsEmail({}, { message: "Insira um email válido." })
     public email: string;
 
-    @ApiProperty({ description: 'Senha do usuário' })
+    @ApiProperty({ description: 'Senha do usuário', minimum: 6 })
     @IsNotEmpty({
         message: "Senha é obrigatório."
     })
+    @Length(6, 50, { message: 'A senha deve ter no minimo 6 caracteres.' })
     public password: string;
 }
 
