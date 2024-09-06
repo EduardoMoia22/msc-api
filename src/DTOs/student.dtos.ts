@@ -60,6 +60,6 @@ export class StudentResponseDTO {
     }
 
     static fromEntity(student: Student): StudentResponseDTO {
-        return new StudentResponseDTO(student.getId, student.getRM, student.getName, student.getEmail, student.getCPF, student.getEntryDate);
+        return new StudentResponseDTO(student.getId, student.getRM, student.getName, student.getEmail, student.getFormattedCpf, student.getEntryDate);
     }
 }
