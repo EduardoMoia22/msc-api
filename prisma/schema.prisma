@@ -19,7 +19,7 @@ model Student {
   cpf       String      @unique
   name      String
   rm        String      @unique
-  entryDate DateTime   
+  entryDate DateTime
   presences Presences[]
   password  String
 
@@ -54,4 +54,11 @@ model User {
   password String
 
   @@map("tb_users")
+}
+
+model Config {
+  id                     Int @id @default(autoincrement())
+  classDurationInMinutes Int
+
+  @@map("tb_config")
 }

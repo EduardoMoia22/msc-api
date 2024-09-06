@@ -21,6 +21,7 @@ async function bootstrap() {
     .addTag('Aluno')
     .addTag('Presença')
     .addTag('Auth')
+    .addTag("Configurações")
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
