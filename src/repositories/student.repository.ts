@@ -56,6 +56,20 @@ export class StudentRepository {
         return StudentMapper.prismaToEntity(student);
     }
 
+    public async findByRM(RM: string): Promise<Student | null> {
+        const student = await this.prisma.student.findUnique({
+            where: {
+                rm: RM
+            }
+        });
+
+        if (!student) {
+            return null;
+        }
+
+        return StudentMapper.prismaToEntity(student);
+    }
+
     public async findByCPF(cpf: string): Promise<Student | null> {
         const student = await this.prisma.student.findUnique({
             where: {

@@ -13,7 +13,7 @@ export class PresenceController {
 
     @UseGuards(AuthGuard)
     @HttpCode(HttpStatus.OK)
-    @ApiOperation({ summary: 'Criar aluno' })
+    @ApiOperation({ summary: 'Lançar presença' })
     @ApiResponse({ status: 200, description: 'Ok', type: PresenceResponseDTO })
     @ApiResponse({ status: 400, description: 'Bad Request.' })
     @ApiResponse({ status: 401, description: 'Unauthorized.' })

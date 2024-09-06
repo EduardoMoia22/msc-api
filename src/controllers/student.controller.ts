@@ -41,6 +41,20 @@ export class StudentController {
 
     @UseGuards(AuthGuard)
     @HttpCode(HttpStatus.OK)
+    @ApiOperation({ summary: 'Buscar aluno por RM' })
+    @ApiResponse({ status: 200, description: 'Ok', type: StudentResponseDTO })
+    @ApiResponse({ status: 400, description: 'Bad Request.' })
+    @ApiResponse({ status: 401, description: 'Unauthorized.' })
+    @ApiResponse({ status: 404, description: 'Not Found.' })
+    @Get("rm/:rm")
+    public async findStudentByRM(@Param('rm') rm: string): Promise<StudentResponseDTO> {
+        const student: Student = await this.studentService.findStudentByRM(rm);
+
+        return StudentResponseDTO.fromEntity(student);
+    }
+
+    @UseGuards(AuthGuard)
+    @HttpCode(HttpStatus.OK)
     @ApiOperation({ summary: 'Buscar todos os alunos' })
     @ApiResponse({ status: 200, description: 'Ok', type: StudentResponseDTO, isArray: true })
     @ApiResponse({ status: 400, description: 'Bad Request.' })
