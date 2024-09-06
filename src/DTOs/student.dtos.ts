@@ -3,24 +3,25 @@ import { IsEmail, IsNotEmpty, Length } from "class-validator";
 import { Student } from "src/entities/student.entity";
 
 export class StudentRequestDTO {
-    @ApiProperty({ description: 'Nome do aluno' })
+    @ApiProperty({ description: 'Nome do aluno', minimum: 4 })
     @IsNotEmpty({
         message: "Nome é obrigatório"
     })
+    @Length(4, 256, { message: 'O nome deve ter no minimo 4 caracteres.' })
     public name: string;
 
-    @ApiProperty({ description: 'Email do aluno' })
+    @ApiProperty({ description: 'Email do aluno'})
     @IsNotEmpty({
         message: "Email é obrigatório"
     })
-    @IsEmail()
+    @IsEmail({}, { message: "Insira um email válido." })
     public email: string;
 
-    @ApiProperty({ description: 'CPF do aluno' })
+    @ApiProperty({ description: 'CPF do aluno',  minimum: 11, maximum: 11 })
     @IsNotEmpty({
         message: "CPF é obrigatório"
     })
-    @Length(11, 11)
+    @Length(11, 11, { message: 'O CPF deve ter 11 caracteres.' })
     public cpf: string;
 }
 
