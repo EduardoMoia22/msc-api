@@ -36,13 +36,14 @@ model Teacher {
 }
 
 model Presences {
-  id        Int      @id @default(autoincrement())
-  student   Student  @relation(fields: [studentId], references: [id])
-  studentId Int
-  teacher   Teacher  @relation(fields: [teacherId], references: [id])
-  teacherId Int
-  startsAt  DateTime
-  endAt     DateTime
+  id              Int      @id @default(autoincrement())
+  student         Student  @relation(fields: [studentId], references: [id])
+  studentId       Int
+  teacher         Teacher  @relation(fields: [teacherId], references: [id])
+  teacherId       Int
+  quantityOfClasses Int
+  startsAt        DateTime
+  endAt           DateTime
 
   @@map("tb_presences")
 }

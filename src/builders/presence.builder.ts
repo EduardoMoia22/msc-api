@@ -6,6 +6,7 @@ export class PresenceBuilder {
     private id: number;
     private student: Student;
     private teacher: Teacher;
+    private quantityOfClasses: number;
     private startsAt: Date;
     private endsAt: Date;
 
@@ -24,6 +25,11 @@ export class PresenceBuilder {
         return this;
     }
 
+    public withNumberOfClases(quantityOfClasses: number): this {
+        this.quantityOfClasses = quantityOfClasses;
+        return this;
+    }
+
     public withStartsAt(startsAt: Date): this {
         this.startsAt = startsAt;
         return this;
@@ -35,6 +41,6 @@ export class PresenceBuilder {
     }
 
     public build(): Presence {
-        return new Presence(this.id, this.student, this.teacher, this.startsAt, this.endsAt);
+        return new Presence(this.id, this.student, this.teacher, this.quantityOfClasses, this.startsAt, this.endsAt);
     }
 }

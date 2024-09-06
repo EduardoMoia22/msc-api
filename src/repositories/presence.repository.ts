@@ -9,12 +9,7 @@ export class PresenceRepository {
 
     public async create(presence: Presence): Promise<Presence> {
         const createPresence = await this.prisma.presences.create({
-            data: {
-                studentId: presence.getStudent.getId,
-                teacherId: presence.getTeacher.getId,
-                startsAt: presence.getStartsAt,
-                endAt: presence.getEndsAt
-            },
+            data: PresenceMapper.entityToPrisma(presence),
             include: {
                 student: true,
                 teacher: true

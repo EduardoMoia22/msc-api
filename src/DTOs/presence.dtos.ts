@@ -1,22 +1,29 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty, IsNumber } from "class-validator";
 import { UserResponseDTO } from "./user.dtos";
 import { TeacherResponseDTO } from "./teacher.dtos";
 import { Presence } from "src/entities/presence.entity";
 import { StudentResponseDTO } from "./student.dtos";
 
 export class PresenceRequestDTO {
-    @ApiProperty({ description: 'Senha de reconhecimento do aluno.' })
+    @ApiProperty({ description: 'Rm do aluno.' })
     @IsNotEmpty({
-        message: "Senha do aluno é obrigatória"
+        message: "Rm do aluno é obrigatório"
     })
-    public studentPassword: string;
+    public studentRM: string;
 
     @ApiProperty({ description: 'Id do professor.' })
     @IsNotEmpty({
         message: "O id do professor é obrigatório."
     })
     public teacherId: string;
+
+    @ApiProperty({ description: "Quantidade de aulas" })
+    @IsNotEmpty({
+        message: "Quantidade de aulas é obrigatória"
+    })
+    @IsNumber({}, { message: "Quantidade de aulas deve ser um número" })
+    public quantityOfClasses: number;
 }
 
 export class PresenceResponseDTO {
@@ -29,6 +36,9 @@ export class PresenceResponseDTO {
     @ApiProperty({ description: 'Professor que dará aula para o aluno.' })
     public readonly teacher: TeacherResponseDTO;
 
+    @ApiProperty({ description: 'Quantidade de aulas' })
+    public readonly quantityOfClasses: number;
+
     @ApiProperty({ description: 'Data e hora do início da aula.' })
     public readonly startsAt: Date;
 
@@ -39,12 +49,14 @@ export class PresenceResponseDTO {
         id: number,
         user: UserResponseDTO,
         teacher: TeacherResponseDTO,
+        quantityOfClasses: number,
         startsAt: Date,
         endsAt: Date,
     ) {
         this.id = id;
         this.user = user;
         this.teacher = teacher;
+        this.quantityOfClasses = quantityOfClasses;
         this.startsAt = startsAt;
         this.endsAt = endsAt;
     }
@@ -54,6 +66,7 @@ export class PresenceResponseDTO {
             presence.getId,
             StudentResponseDTO.fromEntity(presence.getStudent),
             TeacherResponseDTO.fromEntity(presence.getTeacher),
+            presence.getquantityOfClasses,
             presence.getStartsAt,
             presence.getEndsAt
         );

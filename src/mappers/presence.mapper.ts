@@ -18,6 +18,7 @@ export class PresenceMapper {
             .withId(data.id)
             .withStudent(StudentMapper.prismaToEntity(data.student))
             .withTeacher(TeacherMapper.prismaToEntity(data.teacher))
+            .withNumberOfClases(data.quantityOfClasses)
             .withStartsAt(data.startsAt)
             .withEndsAt(data.endAt)
             .build();
@@ -27,6 +28,7 @@ export class PresenceMapper {
         return {
             studentId: data.getStudent.getId,
             teacherId: data.getTeacher.getId,
+            quantityOfClasses: data.getquantityOfClasses,
             endAt: data.getEndsAt,
             startsAt: data.getStartsAt
         }

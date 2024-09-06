@@ -61,6 +61,16 @@ export class StudentService {
         return studentExists;
     }
 
+    public async findStudentByRM(RM: string): Promise<Student> {
+        const studentExists: Student | null = await this.studentRepository.findByRM(RM);
+
+        if (!studentExists) {
+            throw new HttpException("Student not found.", HttpStatus.NOT_FOUND);
+        }
+
+        return studentExists;
+    }
+
     public async findStudentByCPF(cpf: string): Promise<Student> {
         const studentExists: Student | null = await this.studentRepository.findByCPF(cpf);
 

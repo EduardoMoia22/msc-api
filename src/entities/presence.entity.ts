@@ -7,6 +7,7 @@ export class Presence {
         private readonly id: number,
         private readonly student: Student,
         private readonly teacher: Teacher,
+        private readonly quantityOfClasses: number,
         private readonly startsAt: Date,
         private readonly endsAt: Date
     ) { }
@@ -25,6 +26,10 @@ export class Presence {
 
     public get getTeacher(): Teacher {
         return this.teacher;
+    }
+
+    public get getquantityOfClasses(): number {
+        return this.quantityOfClasses;
     }
 
     public get getStartsAt(): Date {

@@ -6,20 +6,28 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { StudentService } from "./student.service";
 import { Student } from "src/entities/student.entity";
 import { PresenceRequestDTO } from "src/DTOs/presence.dtos";
+import { ConfigService } from "./config.service";
+import { Config } from "src/entities/config.entity";
+import { TimeTools } from "src/tools/time.tools";
 
 @Injectable()
 export class PresenceService {
-    constructor(private readonly presenceRepository: PresenceRepository,
+    constructor(
+        private readonly presenceRepository: PresenceRepository,
         private readonly studentService: StudentService,
-        private readonly teacherService: TeacherService
+        private readonly teacherService: TeacherService,
+        private readonly configService: ConfigService
     ) { }
 
     public async createPresence(data: PresenceRequestDTO): Promise<Presence> {
-        const student: Student = await this.studentService.findStudentByPassword(data.studentPassword);
+        const student: Student = await this.studentService.findStudentByRM(data.studentRM);
         const teacher: Teacher = await this.teacherService.findTeacherById(parseInt(data.teacherId));
 
+        const classDurationInminutes: number = (await this.configService.listConfig()).getClassDurationInMinutes;
+        const totalDurationOfClassesInMinutes: number = TimeTools.calculateTotalClassesDurationInMinutes(classDurationInminutes, data.quantityOfClasses);
+
         const now = new Date();
-        const finalClassTime = new Date(now.getTime() + (60 * 60 * 1000) + (30 * 60 * 1000));
+        const finalClassTime: Date = TimeTools.addMinutes(now, totalDurationOfClassesInMinutes);
 
         const existingPresence: Presence | null = await this.presenceRepository.findPresenceByStudentAndTeacherAndTime(
             student.getId,
@@ -37,7 +45,10 @@ export class PresenceService {
             .withTeacher(teacher)
             .withStartsAt(now)
             .withEndsAt(finalClassTime)
+            .withNumberOfClases(data.quantityOfClasses)
             .build();
+
+        console.log(presence);
 
         return await this.presenceRepository.create(presence);
     }
