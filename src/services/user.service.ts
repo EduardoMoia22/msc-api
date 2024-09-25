@@ -60,4 +60,14 @@ export class UserService {
     public async findAllUsers(): Promise<User[]> {
         return await this.userRepository.findAll();
     }
+
+    public async findUserById(id: number): Promise<User>{
+        const user: User | null = await this.userRepository.findById(id);
+
+        if(!user){
+            throw new HttpException("Usuário não encontrado.", HttpStatus.NOT_FOUND);
+        }
+
+        return user;
+    }
 }

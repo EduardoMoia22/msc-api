@@ -42,4 +42,18 @@ export class UserRepository {
             })
         );
     }
+
+    public async findById(id: number): Promise<User | null> {
+        const user = await this.prisma.user.findUnique({
+            where: {
+                id: id
+            }
+        });
+
+        if (!user) {
+            return null;
+        }
+
+        return UserMapper.prismaToEntity(user);
+    }
 }

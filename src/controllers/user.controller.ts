@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { UserRequestDTO, UserResponseDTO } from "DTOs/user.dtos";
 import { User } from "entities/user.entity";
@@ -38,5 +38,19 @@ export class UserController {
         return Promise.all(
             users.map(UserResponseDTO.fromEntity)
         );
+    }
+
+    @UseGuards(AuthGuard)
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({ summary: 'Buscar usuário por ID' })
+    @ApiResponse({ status: 200, description: 'Ok', type: UserResponseDTO })
+    @ApiResponse({ status: 400, description: 'Bad Request.' })
+    @ApiResponse({ status: 401, description: 'Unauthorized.' })
+    @ApiResponse({ status: 404, description: 'Not Found.' })
+    @Get(":id")
+    public async findUserById(@Param('id') id: string): Promise<UserResponseDTO> {
+        const user: User = await this.userService.findUserById(parseInt(id));
+
+        return UserResponseDTO.fromEntity(user);
     }
 }
