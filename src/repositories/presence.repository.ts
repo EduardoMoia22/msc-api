@@ -43,4 +43,36 @@ export class PresenceRepository {
 
         return PresenceMapper.prismaToEntity(presence);
     }
+
+    public async listPresences(studentId?: number, teacherId?: number, startDate?: Date, endDate?: Date): Promise<Presence[]> {
+        const whereCondition: any = {};
+
+        if (startDate || endDate) {
+            whereCondition.startsAt = {};
+            if (startDate) {
+                whereCondition.startsAt.gte = startDate;
+            }
+            if (endDate) {
+                whereCondition.startsAt.lte = endDate;
+            }
+        }
+
+        if (studentId) {
+            whereCondition.studentId = studentId
+        }
+
+        if (teacherId) {
+            whereCondition.teacherId = teacherId;
+        }
+
+        const presences = await this.prisma.presences.findMany({
+            where: whereCondition,
+            include: {
+                student: true,
+                teacher: true,
+            },
+        });
+
+        return presences.map(PresenceMapper.prismaToEntity);
+    }
 }

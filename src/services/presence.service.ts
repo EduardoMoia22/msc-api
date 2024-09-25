@@ -26,6 +26,9 @@ export class PresenceService {
         const totalDurationOfClassesInMinutes: number = TimeTools.calculateTotalClassesDurationInMinutes(classDurationInminutes, data.quantityOfClasses);
 
         const now = new Date();
+        const gmtOffset = -3; // GMT-3
+        // Ajusta o `now` para o fuso horário GMT-3
+        now.setUTCHours(now.getUTCHours() + gmtOffset);
         const finalClassTime: Date = TimeTools.addMinutes(now, totalDurationOfClassesInMinutes);
 
         const existingPresence: Presence | null = await this.presenceRepository.findPresenceByStudentAndTeacherAndTime(
@@ -47,8 +50,30 @@ export class PresenceService {
             .withNumberOfClases(data.quantityOfClasses)
             .build();
 
-        console.log(presence);
-
         return await this.presenceRepository.create(presence);
+    }
+
+    public async listPresences(studentId?: number, teacherId?: number, startDate?: string, endDate?: string): Promise<Presence[]> {
+        studentId ? await this.studentService.findStudentById(studentId) : undefined;
+        teacherId ? await this.teacherService.findTeacherById(teacherId) : undefined;
+
+        let start: Date | undefined;
+        let end: Date | undefined;
+
+        if (startDate && TimeTools.isValidDate(startDate)) {
+            start = new Date(startDate);
+            start.setUTCHours(0, 0, 0, 0);
+        } else if (startDate) {
+            throw new HttpException(`Data inválida fornecida: ${startDate}`, HttpStatus.BAD_REQUEST);
+        }
+
+        if (endDate && TimeTools.isValidDate(endDate)) {
+            end = new Date(endDate);
+            end.setUTCHours(23, 59, 59, 999);
+        } else if (endDate) {
+            throw new HttpException(`Data inválida fornecida: ${endDate}`, HttpStatus.BAD_REQUEST);
+        }
+
+        return await this.presenceRepository.listPresences(studentId, teacherId, start, end);
     }
 }

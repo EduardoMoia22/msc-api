@@ -31,7 +31,7 @@ export class PresenceResponseDTO {
     public readonly id: number;
 
     @ApiProperty({ description: 'Aluno que solicitou a presença.' })
-    public readonly user: UserResponseDTO;
+    public readonly student: UserResponseDTO;
 
     @ApiProperty({ description: 'Professor que dará aula para o aluno.' })
     public readonly teacher: TeacherResponseDTO;
@@ -47,14 +47,14 @@ export class PresenceResponseDTO {
 
     private constructor(
         id: number,
-        user: UserResponseDTO,
+        student: StudentResponseDTO,
         teacher: TeacherResponseDTO,
         quantityOfClasses: number,
         startsAt: Date,
         endsAt: Date,
     ) {
         this.id = id;
-        this.user = user;
+        this.student = student;
         this.teacher = teacher;
         this.quantityOfClasses = quantityOfClasses;
         this.startsAt = startsAt;
