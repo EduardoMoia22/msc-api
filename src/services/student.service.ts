@@ -14,8 +14,12 @@ export class StudentService {
         const studentEmailExists: Student | null = await this.studentRepository.findByEmail(data.email);
         const studentCPFExists: Student | null = await this.studentRepository.findByCPF(data.cpf);
 
-        if (studentEmailExists || studentCPFExists) {
-            throw new HttpException("student already exists", HttpStatus.NOT_FOUND);
+        if(studentEmailExists){
+            throw new HttpException("Já existe um aluno cadastrado com o mesmo email. Verifique novamente as informações.", HttpStatus.CONFLICT);
+        }
+
+        if(studentCPFExists){
+            throw new HttpException("Já existe um aluno cadastrado com o mesmo cpf. Verifique novamente as informações.", HttpStatus.CONFLICT);
         }
 
         const student: Student = StudentMapper.requestDtoToEntity(data);
@@ -35,7 +39,7 @@ export class StudentService {
         const studentExists: Student | null = await this.studentRepository.findById(id);
 
         if (!studentExists) {
-            throw new HttpException("Student not found.", HttpStatus.NOT_FOUND);
+            throw new HttpException("Aluno não encontrado.", HttpStatus.NOT_FOUND);
         }
 
         return studentExists;
@@ -45,7 +49,7 @@ export class StudentService {
         const studentExists: Student | null = await this.studentRepository.findByEmail(email);
 
         if (!studentExists) {
-            throw new HttpException("Student not found.", HttpStatus.NOT_FOUND);
+            throw new HttpException("Aluno não encontrado.", HttpStatus.NOT_FOUND);
         }
 
         return studentExists;
@@ -55,7 +59,7 @@ export class StudentService {
         const studentExists: Student | null = await this.studentRepository.findByPassword(password);
 
         if (!studentExists) {
-            throw new HttpException("Student not found.", HttpStatus.NOT_FOUND);
+            throw new HttpException("Aluno não encontrado.", HttpStatus.NOT_FOUND);
         }
 
         return studentExists;
@@ -66,7 +70,7 @@ export class StudentService {
 
 
         if (!studentExists) {
-            throw new HttpException("Student not found.", HttpStatus.NOT_FOUND);
+            throw new HttpException("Aluno não encontrado.", HttpStatus.NOT_FOUND);
         }
 
         return studentExists;
@@ -76,7 +80,7 @@ export class StudentService {
         const studentExists: Student | null = await this.studentRepository.findByCPF(cpf);
 
         if (!studentExists) {
-            throw new HttpException("Student not found.", HttpStatus.NOT_FOUND);
+            throw new HttpException("Aluno não encontrado.", HttpStatus.NOT_FOUND);
         }
 
         return studentExists;

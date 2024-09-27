@@ -13,7 +13,7 @@ export class UserService {
         const userAlreadyExists: User | null = await this.userRepository.findByEmail(data.email);
 
         if (userAlreadyExists) {
-            throw new HttpException("User already exists.", HttpStatus.CONFLICT);
+            throw new HttpException("Já existe um usuário cadastrado com esse email. Verifique novamente as informações.", HttpStatus.CONFLICT);
         }
 
         const hashedPassword: string = await Utils.hashPassword(data.password);
@@ -31,7 +31,7 @@ export class UserService {
         const user: User | null = await this.userRepository.findByEmail(email);
 
         if (!user && throwError) {
-            throw new HttpException("User not found.", HttpStatus.NOT_FOUND);
+            throw new HttpException("Usuário não encontrado.", HttpStatus.NOT_FOUND);
         }
 
         return user;
