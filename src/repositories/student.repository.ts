@@ -112,4 +112,15 @@ export class StudentRepository {
 
         return StudentMapper.prismaToEntity(lastStudent);
     }
+
+    public async update(data: Student): Promise<Student> {
+        const updateStudent = await this.prisma.student.update({
+            data: StudentMapper.entityToPrisma(data),
+            where: {
+                id: data.getId
+            }
+        });
+
+        return StudentMapper.prismaToEntity(updateStudent);
+    }
 }

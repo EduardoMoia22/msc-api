@@ -4,9 +4,9 @@ export class Student {
     constructor(
         private readonly id: number,
         private rm: string,
-        private readonly name: string,
-        private readonly email: string,
-        private readonly cpf: string,
+        private name: string,
+        private email: string,
+        private cpf: string,
         private entryDate: Date,
         private password: string,
     ) { }
@@ -28,6 +28,16 @@ export class Student {
 
     public set setEntryDate(entryDate: Date) {
         this.entryDate = entryDate;
+    }
+
+    public updateAllAllowedFields(
+        name: string,
+        cpf: string,
+        email: string
+    ){
+        this.name = name;
+        this.cpf = cpf;
+        this.email = email;
     }
 
     public static get Builder() {
