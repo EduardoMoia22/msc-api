@@ -14,8 +14,12 @@ export class StudentService {
         const studentEmailExists: Student | null = await this.studentRepository.findByEmail(data.email);
         const studentCPFExists: Student | null = await this.studentRepository.findByCPF(data.cpf);
 
-        if (studentEmailExists || studentCPFExists) {
-            throw new HttpException("student already exists", HttpStatus.NOT_FOUND);
+        if (studentEmailExists) {
+            throw new HttpException("Já existe um aluno cadastrado com o mesmo email. Verifique novamente as informações.", HttpStatus.CONFLICT);
+        }
+
+        if (studentCPFExists) {
+            throw new HttpException("Já existe um aluno cadastrado com o mesmo cpf. Verifique novamente as informações.", HttpStatus.CONFLICT);
         }
 
         const student: Student = StudentMapper.requestDtoToEntity(data);
@@ -35,7 +39,7 @@ export class StudentService {
         const studentExists: Student | null = await this.studentRepository.findById(id);
 
         if (!studentExists) {
-            throw new HttpException("Student not found.", HttpStatus.NOT_FOUND);
+            throw new HttpException("Aluno não encontrado.", HttpStatus.NOT_FOUND);
         }
 
         return studentExists;
@@ -45,7 +49,7 @@ export class StudentService {
         const studentExists: Student | null = await this.studentRepository.findByEmail(email);
 
         if (!studentExists) {
-            throw new HttpException("Student not found.", HttpStatus.NOT_FOUND);
+            throw new HttpException("Aluno não encontrado.", HttpStatus.NOT_FOUND);
         }
 
         return studentExists;
@@ -55,7 +59,7 @@ export class StudentService {
         const studentExists: Student | null = await this.studentRepository.findByPassword(password);
 
         if (!studentExists) {
-            throw new HttpException("Student not found.", HttpStatus.NOT_FOUND);
+            throw new HttpException("Aluno não encontrado.", HttpStatus.NOT_FOUND);
         }
 
         return studentExists;
@@ -66,7 +70,7 @@ export class StudentService {
 
 
         if (!studentExists) {
-            throw new HttpException("Student not found.", HttpStatus.NOT_FOUND);
+            throw new HttpException("Aluno não encontrado.", HttpStatus.NOT_FOUND);
         }
 
         return studentExists;
@@ -76,7 +80,7 @@ export class StudentService {
         const studentExists: Student | null = await this.studentRepository.findByCPF(cpf);
 
         if (!studentExists) {
-            throw new HttpException("Student not found.", HttpStatus.NOT_FOUND);
+            throw new HttpException("Aluno não encontrado.", HttpStatus.NOT_FOUND);
         }
 
         return studentExists;
@@ -84,5 +88,41 @@ export class StudentService {
 
     public async findAllStudents(): Promise<Student[]> {
         return await this.studentRepository.findAll();
+    }
+
+    public async updateStudent(id: number, data: StudentRequestDTO): Promise<Student> {
+        const studentExists: Student = await this.findStudentById(id);
+        const checkIfThereIsAlreadyStudentWithThatCPF: Student | null = await this.studentRepository.findByCPF(data.cpf);
+        const checkIfThereIsAlreadyStudentWithThatEMAIL: Student | null = await this.studentRepository.findByEmail(data.email);
+        const errors: { message: string, code: HttpStatus }[] = [];
+
+        if (checkIfThereIsAlreadyStudentWithThatCPF && (checkIfThereIsAlreadyStudentWithThatCPF.getId !== studentExists.getId)) {
+            errors.push({
+                message: "Já existe um aluno cadastrado com esse cpf. Verifique novamente as informações.",
+                code: HttpStatus.CONFLICT
+            });
+        }
+
+        if (checkIfThereIsAlreadyStudentWithThatEMAIL && (checkIfThereIsAlreadyStudentWithThatEMAIL.getId !== studentExists.getId)) {
+            errors.push({
+                message: "Já existe um aluno cadastrado com esse email. Verifique novamente as informações.",
+                code: HttpStatus.CONFLICT
+            });
+        }
+
+        if (errors.length > 0) {
+            throw new HttpException(
+                { errors },
+                HttpStatus.CONFLICT
+            );
+        }
+
+        studentExists.updateAllAllowedFields(
+            data.name,
+            data.cpf,
+            data.email
+        )
+
+        return await this.studentRepository.update(studentExists);
     }
 }

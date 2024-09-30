@@ -12,7 +12,7 @@ export class TeacherService {
         const teacherExists: Teacher | null = await this.teacherRepository.findByEmail(data.email);
 
         if (teacherExists) {
-            throw new HttpException("Teacher already exists.", HttpStatus.NOT_FOUND);
+            throw new HttpException("Já existe um professor cadastrado com esse email. Verifique novamente as informações", HttpStatus.NOT_FOUND);
         }
 
         const teacher: Teacher = TeacherMapper.requestDtoToEntity(data);
@@ -24,7 +24,7 @@ export class TeacherService {
         const teacherExists: Teacher | null = await this.teacherRepository.findById(id);
 
         if (!teacherExists) {
-            throw new HttpException("Teacher not found.", HttpStatus.NOT_FOUND);
+            throw new HttpException("Professor não encontrado.", HttpStatus.NOT_FOUND);
         }
 
         return teacherExists;
@@ -34,7 +34,7 @@ export class TeacherService {
         const teacherExists: Teacher | null = await this.teacherRepository.findByEmail(email);
 
         if (!teacherExists) {
-            throw new HttpException("Teacher not found.", HttpStatus.NOT_FOUND);
+            throw new HttpException("Professor não encontrado.", HttpStatus.NOT_FOUND);
         }
 
         return teacherExists;
