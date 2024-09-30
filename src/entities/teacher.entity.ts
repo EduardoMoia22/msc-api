@@ -3,12 +3,20 @@ import { TeacherBuilder } from "builders/teacher.builder";
 export class Teacher{
     constructor(
         private readonly id: number,
-        private readonly name: string,
-        private readonly email: string
+        private name: string,
+        private email: string
     ) {}
 
     public static get Builder() {
         return new TeacherBuilder();
+    }
+
+    public updateAllAllowedFields(
+        name: string,
+        email: string
+    ){
+        this.name = name;
+        this.email = email;
     }
 
     public get getId(): number{

@@ -43,4 +43,23 @@ export class TeacherService {
     public async findAllTeachers(): Promise<Teacher[]> {
         return await this.teacherRepository.findAll();
     }
+
+    public async updateTeacher(id: number, data: TeacherRequestDTO): Promise<Teacher> {
+        const teacherExists: Teacher = await this.findTeacherById(id);
+        const checkIfThereIsAlreadyTeacherWithThatEMAIL: Teacher | null = await this.teacherRepository.findByEmail(data.email);
+
+        if (checkIfThereIsAlreadyTeacherWithThatEMAIL && (checkIfThereIsAlreadyTeacherWithThatEMAIL.getId !== teacherExists.getId)) {
+            throw new HttpException(
+                "Já existe um professor cadastrado com esse email. Verifique novamente as informações.",
+                HttpStatus.CONFLICT
+            );
+        }
+
+        teacherExists.updateAllAllowedFields(
+            data.name,
+            data.email
+        )
+
+        return await this.teacherRepository.update(teacherExists);
+    }
 }
