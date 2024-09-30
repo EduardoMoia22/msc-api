@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Put, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { TeacherRequestDTO, TeacherResponseDTO } from "src/DTOs/teacher.dtos";
 import { Teacher } from "src/entities/teacher.entity";
@@ -54,5 +54,20 @@ export class TeacherController {
                 return TeacherResponseDTO.fromEntity(teacher);
             })
         );
+    }
+
+    @UseGuards(AuthGuard)
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({ summary: 'Atualizar professor' })
+    @ApiResponse({ status: 200, description: 'Ok', type: TeacherResponseDTO })
+    @ApiResponse({ status: 400, description: 'Bad Request.'})
+    @ApiResponse({ status: 401, description: 'Unauthorized.' })
+    @ApiResponse({ status: 404, description: 'Not Found.' })
+    @ApiResponse({ status: 409, description: 'Conflict.' })
+    @Put("/:id")
+    public async updateUser(@Body() body: TeacherRequestDTO, @Param("id") id: string): Promise<TeacherResponseDTO>{
+        const updateTeacher: Teacher = await this.teacherService.updateTeacher(parseInt(id), body);
+
+        return TeacherResponseDTO.fromEntity(updateTeacher);
     }
 }

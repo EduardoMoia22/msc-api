@@ -55,4 +55,14 @@ export class TeacherRepository {
             }),
         );
     }
+    public async update(data: Teacher): Promise<Teacher> {
+        const updateTeacher = await this.prisma.teacher.update({
+            data: TeacherMapper.entityToPrisma(data),
+            where: {
+                id: data.getId
+            }
+        });
+
+        return TeacherMapper.prismaToEntity(updateTeacher);
+    }
 }
