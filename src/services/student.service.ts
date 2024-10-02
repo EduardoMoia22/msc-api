@@ -5,7 +5,9 @@ import { StudentMapper } from "src/mappers/Student.mapper";
 import { StudentRepository } from "src/repositories/student.repository";
 import { Utils } from "src/tools/utils.tool";
 import { CacheService } from "./cache.service";
-
+import { ExcelReaderService } from "./excel-reader.service";
+import { Queue } from "bull";
+import { InjectQueue } from "@nestjs/bull";
 
 @Injectable()
 export class StudentService {
@@ -14,7 +16,9 @@ export class StudentService {
 
     constructor(
         private readonly studentRepository: StudentRepository,
-        private readonly cacheService: CacheService
+        private readonly cacheService: CacheService,
+        private readonly excelReaderService: ExcelReaderService,
+        @InjectQueue('student-queue') private studentQueue: Queue,
     ) { }
 
     private async invalidateStudentCache(
@@ -48,7 +52,7 @@ export class StudentService {
         const studentCPFExists: Student | null = await this.studentRepository.findByCPF(data.cpf);
 
         if (studentEmailExists) {
-            throw new HttpException("Já existe um aluno cadastrado com o mesmo email. Verifique novamente as informações.", HttpStatus.CONFLICT);
+            throw new HttpException(`Já existe um aluno cadastrado com o mesmo email ${data.email}. Verifique novamente as informações.`, HttpStatus.CONFLICT);
         }
 
         if (studentCPFExists) {
@@ -213,5 +217,24 @@ export class StudentService {
         await this.invalidateStudentCache(id, emailBeforeUpdate, studentExists.getRM, cpfBeforeUpdate);
 
         return updatedStudent;
+    }
+
+    public async createUsersWithExcel(filename: string): Promise<boolean> {
+        try {
+            const students = await this.excelReaderService.readExcelFile(filename, StudentRequestDTO);
+
+            if (!students || students.length === 0) {
+                throw new HttpException('Nenhum aluno foi encontrado no arquivo Excel.', HttpStatus.BAD_REQUEST);
+            }
+
+            await this.studentQueue.add("process-student-creation-excel", students, { priority: 1 });
+
+            return true;
+        } catch (error) {
+            throw new HttpException({
+                status: HttpStatus.BAD_REQUEST,
+                message: `Erro ao processar o arquivo Excel: ${error.message || 'Erro desconhecido'}`
+            }, HttpStatus.BAD_REQUEST);
+        }
     }
 }

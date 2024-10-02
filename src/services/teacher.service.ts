@@ -4,6 +4,9 @@ import { Teacher } from "src/entities/teacher.entity";
 import { TeacherMapper } from "src/mappers/teacher.mapper";
 import { TeacherRepository } from "src/repositories/teacher.repository";
 import { CacheService } from "./cache.service";
+import { ExcelReaderService } from "./excel-reader.service";
+import { InjectQueue } from "@nestjs/bull";
+import { Queue } from "bull";
 
 @Injectable()
 export class TeacherService {
@@ -12,7 +15,9 @@ export class TeacherService {
 
     constructor(
         private readonly teacherRepository: TeacherRepository,
-        private readonly cacheService: CacheService
+        private readonly cacheService: CacheService,
+        private readonly excelReaderService: ExcelReaderService,
+        @InjectQueue('teacher-queue') private teacherQueue: Queue,
     ) { }
 
     private async invalidateTeacherCache(teacherId: number, email?: string): Promise<void> {
@@ -121,5 +126,24 @@ export class TeacherService {
         await this.invalidateTeacherCache(id, emailBeforeUpdate);
 
         return updatedTeacher
+    }
+
+    public async createTeachersWithExcel(filename: string): Promise<boolean> {
+        try {
+            const teachers = await this.excelReaderService.readExcelFile(filename, TeacherRequestDTO);
+
+            if (!teachers || teachers.length === 0) {
+                throw new HttpException('Nenhum professor foi encontrado no arquivo Excel.', HttpStatus.BAD_REQUEST);
+            }
+
+            await this.teacherQueue.add("process-teacher-creation-excel", teachers, { priority: 1 });
+
+            return true;
+        } catch (error) {
+            throw new HttpException({
+                status: HttpStatus.BAD_REQUEST,
+                message: `Erro ao processar o arquivo Excel: ${error.message || 'Erro desconhecido'}`
+            }, HttpStatus.BAD_REQUEST);
+        }
     }
 }

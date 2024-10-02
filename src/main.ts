@@ -4,8 +4,12 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as compression from 'compression';
 import helmet from 'helmet';
+import * as dotenv from 'dotenv';
+
+const port = process.env.PORT || 3000;
 
 async function bootstrap() {
+  dotenv.config();
   const app = await NestFactory.create(AppModule);
   app.use(compression());
   app.use(helmet());
@@ -25,6 +29,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
   app.useGlobalPipes(new ValidationPipe());
-  await app.listen(3000);
+  await app.listen(port);
 }
 bootstrap();

@@ -1,5 +1,6 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Put, UseGuards } from "@nestjs/common";
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { Body, Controller, Get, HttpCode, HttpException, HttpStatus, Param, Post, Put, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { TeacherRequestDTO, TeacherResponseDTO } from "src/DTOs/teacher.dtos";
 import { Teacher } from "src/entities/teacher.entity";
 import { AuthGuard } from "src/guards/auth.guard";
@@ -38,7 +39,7 @@ export class TeacherController {
 
         return TeacherResponseDTO.fromEntity(teacher);
     }
-    
+
     @UseGuards(AuthGuard)
     @HttpCode(HttpStatus.OK)
     @ApiOperation({ summary: 'Listar todos os professores' })
@@ -60,14 +61,50 @@ export class TeacherController {
     @HttpCode(HttpStatus.OK)
     @ApiOperation({ summary: 'Atualizar professor' })
     @ApiResponse({ status: 200, description: 'Ok', type: TeacherResponseDTO })
-    @ApiResponse({ status: 400, description: 'Bad Request.'})
+    @ApiResponse({ status: 400, description: 'Bad Request.' })
     @ApiResponse({ status: 401, description: 'Unauthorized.' })
     @ApiResponse({ status: 404, description: 'Not Found.' })
     @ApiResponse({ status: 409, description: 'Conflict.' })
     @Put("/:id")
-    public async updateUser(@Body() body: TeacherRequestDTO, @Param("id") id: string): Promise<TeacherResponseDTO>{
+    public async updateUser(@Body() body: TeacherRequestDTO, @Param("id") id: string): Promise<TeacherResponseDTO> {
         const updateTeacher: Teacher = await this.teacherService.updateTeacher(parseInt(id), body);
 
         return TeacherResponseDTO.fromEntity(updateTeacher);
+    }
+
+    @UseGuards(AuthGuard)
+    @Post('/import/excel')
+    @ApiOperation({ summary: 'Importar professores a partir de um arquivo Excel' })
+    @ApiResponse({ status: 200, description: 'Arquivo importado com sucesso.' })
+    @ApiResponse({ status: 400, description: 'Bad Request. O arquivo não está no formato esperado ou contém erros.' })
+    @ApiResponse({ status: 401, description: 'Unauthorized.' })
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({
+        description: 'Arquivo Excel com os dados dos professores',
+        type: 'multipart/form-data',
+        schema: {
+            type: 'object',
+            properties: {
+                file: {
+                    type: 'string',
+                    format: 'binary',
+                },
+            },
+        },
+    })
+    @UseInterceptors(FileInterceptor('file', {
+        dest: process.env.FILE_PATH || process.env.RAILWAY_VOLUME_MOUNT_PATH
+    }))
+    public async uploadFile(@UploadedFile() file: Express.Multer.File) {
+        if (!file) {
+            throw new HttpException('Arquivo não fornecido.', HttpStatus.BAD_REQUEST);
+        }
+
+        const numberOfImportedTeachers: boolean = await this.teacherService.createTeachersWithExcel(file.filename);
+
+        return {
+            message: 'Arquivo importado com sucesso.',
+            numberOfImportedTeachers,
+        };
     }
 }
