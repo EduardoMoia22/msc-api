@@ -14,7 +14,11 @@ export class Utils {
         return isMatch;
     }
 
-    public static getCurrentDateTimeBR(): Date {
-        return tzDate(new Date(), "America/Sao_Paulo");
+    public static getCurrentGMTDateTime(): Date {
+        const now = new Date();
+        const gmtOffset = -3; // GMT-3
+        // Ajusta o `now` para o fuso horário GMT-3
+        now.setUTCHours(now.getUTCHours() + gmtOffset);
+        return now;
     }
 }

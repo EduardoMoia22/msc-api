@@ -4,10 +4,12 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as compression from 'compression';
 import helmet from 'helmet';
+import * as dotenv from 'dotenv';
 
 const port = process.env.PORT || 3000;
 
 async function bootstrap() {
+  dotenv.config();
   const app = await NestFactory.create(AppModule);
   app.use(compression());
   app.use(helmet());

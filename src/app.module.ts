@@ -6,10 +6,11 @@ import { StudentModule } from './modules/student.module';
 import { UserModule } from './modules/user.module';
 import { AuthModule } from './modules/auth.module';
 import { ConfigModule } from './modules/config.module';
+import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [DataModule, StudentModule, TeacherModule, PresenceModule, UserModule, AuthModule, ConfigModule],
   controllers: [],
-  providers: [],
 })
 export class AppModule { }

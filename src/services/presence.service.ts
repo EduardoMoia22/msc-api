@@ -8,6 +8,7 @@ import { Student } from "entities/student.entity";
 import { PresenceRequestDTO } from "DTOs/presence.dtos";
 import { ConfigService } from "./config.service";
 import { TimeTools } from "tools/time.tools";
+import { Utils } from "tools/utils.tool";
 
 @Injectable()
 export class PresenceService {
@@ -25,10 +26,7 @@ export class PresenceService {
         const classDurationInminutes: number = (await this.configService.listConfig()).getClassDurationInMinutes;
         const totalDurationOfClassesInMinutes: number = TimeTools.calculateTotalClassesDurationInMinutes(classDurationInminutes, data.quantityOfClasses);
 
-        const now = new Date();
-        const gmtOffset = -3; // GMT-3
-        // Ajusta o `now` para o fuso horário GMT-3
-        now.setUTCHours(now.getUTCHours() + gmtOffset);
+        const now = Utils.getCurrentGMTDateTime();
         const finalClassTime: Date = TimeTools.addMinutes(now, totalDurationOfClassesInMinutes);
 
         const existingPresence: Presence | null = await this.presenceRepository.findPresenceByStudentAndTeacherAndTime(

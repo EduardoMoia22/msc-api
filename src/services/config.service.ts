@@ -2,11 +2,16 @@ import { HttpException, HttpStatus, Injectable, OnModuleInit } from "@nestjs/com
 import { ConfigRequestDTO } from "DTOs/config.dtos";
 import { Config } from "entities/config.entity";
 import { ConfigRepository } from "repositories/config.repository";
+import { CacheService } from "./cache.service";
 
 @Injectable()
 export class ConfigService implements OnModuleInit {
+    private readonly CONFIG_LIST_CACHE_KEY = this.cacheService.generateListCacheKey('configs');
+    private readonly CACHE_TTL = 3600000;
+
     constructor(
-        private readonly configRepository: ConfigRepository
+        private readonly configRepository: ConfigRepository,
+        private readonly cacheService: CacheService
     ) { }
 
     public async onModuleInit() {
@@ -34,8 +39,17 @@ export class ConfigService implements OnModuleInit {
     }
 
     public async findConfig(): Promise<Config | null> {
+        const cachedConfig = await this.cacheService.get<Config>(this.CONFIG_LIST_CACHE_KEY);
+
+        if (cachedConfig) {
+            console.log('Fetching configs from cache.');
+            return cachedConfig;
+        }
+
+        console.log('Fetching configs from the database...');
         const config: Config | null = await this.configRepository.findConfig();
 
+        await this.cacheService.set(this.CONFIG_LIST_CACHE_KEY, config, this.CACHE_TTL);
         return config;
     }
 
@@ -56,8 +70,12 @@ export class ConfigService implements OnModuleInit {
             throw new HttpException("Erro referente a configuração. Entre em contato com os desenvolvedores.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        const updatedConfig: Config = await this.configRepository.update(config);
+
         config.update(data.classDurationInMinutes);
 
-        return await this.configRepository.update(config);
+        await this.cacheService.del(this.CONFIG_LIST_CACHE_KEY);
+
+        return updatedConfig
     }
 }

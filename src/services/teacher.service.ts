@@ -3,10 +3,35 @@ import { TeacherRequestDTO } from "DTOs/teacher.dtos";
 import { Teacher } from "entities/teacher.entity";
 import { TeacherMapper } from "mappers/teacher.mapper";
 import { TeacherRepository } from "repositories/teacher.repository";
+import { CacheService } from "./cache.service";
+import { ExcelReaderService } from "./excel-reader.service";
+import { InjectQueue } from "@nestjs/bull";
+import { Queue } from "bull";
 
 @Injectable()
 export class TeacherService {
-    constructor(private readonly teacherRepository: TeacherRepository) { }
+    private readonly TEACHER_LIST_CACHE_KEY = this.cacheService.generateListCacheKey('teachers');
+    private readonly CACHE_TTL = 3600000;
+
+    constructor(
+        private readonly teacherRepository: TeacherRepository,
+        private readonly cacheService: CacheService,
+        private readonly excelReaderService: ExcelReaderService,
+        @InjectQueue('teacher-queue') private teacherQueue: Queue,
+    ) { }
+
+    private async invalidateTeacherCache(teacherId: number, email?: string): Promise<void> {
+        const cacheKeys = [
+            this.cacheService.generateCacheKey('teacher', teacherId),
+            this.TEACHER_LIST_CACHE_KEY
+        ];
+
+        if (email) {
+            cacheKeys.push(this.cacheService.generateCacheKey('teacher_email', email));
+        }
+
+        await this.cacheService.invalidateMultiple(cacheKeys);
+    }
 
     public async createTeacher(data: TeacherRequestDTO): Promise<Teacher> {
         const teacherExists: Teacher | null = await this.teacherRepository.findByEmail(data.email);
@@ -17,38 +42,74 @@ export class TeacherService {
 
         const teacher: Teacher = TeacherMapper.requestDtoToEntity(data);
 
-        return await this.teacherRepository.create(teacher);
+        const createdTeacher: Teacher = await this.teacherRepository.create(teacher);
+
+        this.cacheService.del(this.TEACHER_LIST_CACHE_KEY);
+
+        return createdTeacher;
     }
 
     public async findTeacherById(id: number): Promise<Teacher> {
+        const cacheKey = this.cacheService.generateCacheKey('teacher', id);
+        const cachedTeacher = await this.cacheService.get<Teacher>(cacheKey);
+
+        if (cachedTeacher) {
+            console.log(`Fetching teacher with ID ${id} from cache.`);
+            return cachedTeacher;
+        }
+
         const teacherExists: Teacher | null = await this.teacherRepository.findById(id);
 
         if (!teacherExists) {
             throw new HttpException("Professor não encontrado.", HttpStatus.NOT_FOUND);
         }
 
+        await this.cacheService.set(cacheKey, teacherExists, this.CACHE_TTL);
+
         return teacherExists;
     }
 
     public async findTeacherByEmail(email: string): Promise<Teacher> {
+        const cacheKey = this.cacheService.generateCacheKey('teacher_email', email);
+        const cachedTeacher = await this.cacheService.get<Teacher>(cacheKey);
+
+        if (cachedTeacher) {
+            console.log(`Fetching teacher with email ${email} from cache.`);
+            return cachedTeacher;
+        }
+
         const teacherExists: Teacher | null = await this.teacherRepository.findByEmail(email);
 
         if (!teacherExists) {
             throw new HttpException("Professor não encontrado.", HttpStatus.NOT_FOUND);
         }
 
+        await this.cacheService.set(cacheKey, teacherExists, this.CACHE_TTL);
+
         return teacherExists;
     }
 
     public async findAllTeachers(): Promise<Teacher[]> {
-        return await this.teacherRepository.findAll();
+        const cachedTeachers = await this.cacheService.get<Teacher[]>(this.TEACHER_LIST_CACHE_KEY);
+
+        if (cachedTeachers) {
+            console.log('Fetching teachers from cache.');
+            return cachedTeachers;
+        }
+
+        console.log('Fetching teachers from the database...');
+        const teachers: Teacher[] = await this.teacherRepository.findAll();
+
+        await this.cacheService.set(this.TEACHER_LIST_CACHE_KEY, teachers, this.CACHE_TTL);
+        return teachers;
     }
 
     public async updateTeacher(id: number, data: TeacherRequestDTO): Promise<Teacher> {
         const teacherExists: Teacher = await this.findTeacherById(id);
-        const checkIfThereIsAlreadyTeacherWithThatEMAIL: Teacher | null = await this.teacherRepository.findByEmail(data.email);
+        const emailBeforeUpdate = teacherExists.getEmail;
+        const existingTeacherWithEmail: Teacher | null = await this.teacherRepository.findByEmail(data.email);
 
-        if (checkIfThereIsAlreadyTeacherWithThatEMAIL && (checkIfThereIsAlreadyTeacherWithThatEMAIL.getId !== teacherExists.getId)) {
+        if (existingTeacherWithEmail && (existingTeacherWithEmail.getId !== teacherExists.getId)) {
             throw new HttpException(
                 "Já existe um professor cadastrado com esse email. Verifique novamente as informações.",
                 HttpStatus.CONFLICT
@@ -60,6 +121,29 @@ export class TeacherService {
             data.email
         )
 
-        return await this.teacherRepository.update(teacherExists);
+        const updatedTeacher: Teacher = await this.teacherRepository.update(teacherExists);
+
+        await this.invalidateTeacherCache(id, emailBeforeUpdate);
+
+        return updatedTeacher
+    }
+
+    public async createTeachersWithExcel(filename: string): Promise<boolean> {
+        try {
+            const teachers = await this.excelReaderService.readExcelFile(filename, TeacherRequestDTO);
+
+            if (!teachers || teachers.length === 0) {
+                throw new HttpException('Nenhum professor foi encontrado no arquivo Excel.', HttpStatus.BAD_REQUEST);
+            }
+
+            await this.teacherQueue.add("process-teacher-creation-excel", teachers, { priority: 1 });
+
+            return true;
+        } catch (error) {
+            throw new HttpException({
+                status: HttpStatus.BAD_REQUEST,
+                message: `Erro ao processar o arquivo Excel: ${error.message || 'Erro desconhecido'}`
+            }, HttpStatus.BAD_REQUEST);
+        }
     }
 }

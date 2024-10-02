@@ -14,5 +14,25 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  redis:
+    image: redis:latest        # Utiliza a imagem oficial do Redis
+    container_name: my-redis    # Nome do contêiner
+    ports:
+      - "6379:6379"             # Mapeia a porta 6379 do contêiner para a porta 6379 do host
+    volumes:
+      - redis-data:/data  
+
+  redis-commander:  # Adiciona o serviço do Redis Commander
+    image: rediscommander/redis-commander:latest
+    container_name: redis-commander
+    ports:
+      - "8081:8081"  # Mapeia a porta 8081 do contêiner para a porta 8081 do host
+    environment:
+      - REDIS_HOST=redis  # Nome do serviço Redis
+      - REDIS_PORT=6379    # Porta do Redis
+    depends_on:
+      - redis  # Certifica-se de que o Redis esteja disponível antes de iniciar o Redis Commander
+
 volumes:
   postgres_data:
+  redis-data:
