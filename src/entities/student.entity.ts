@@ -20,9 +20,6 @@ export class Student {
             sequential = parseInt(lastStudent.rm.slice(-3)) + 1;
         }
 
-        console.log(entryDate)
-        console.log(sequential.toString().padStart(3, '0'));
-
         this.rm = `${entryDate}${sequential.toString().padStart(3, '0')}`;
     }
 
