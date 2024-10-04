@@ -84,8 +84,12 @@ export class StudentRepository {
         return StudentMapper.prismaToEntity(student);
     }
 
-    public async findAll(): Promise<Student[]> {
-        const students = await this.prisma.student.findMany();
+    public async findAll(orderByField: 'id' | 'entryDate' = 'id', orderDirection: 'asc' | 'desc' = 'asc'): Promise<Student[]> {
+        const students = await this.prisma.student.findMany({
+            orderBy: {
+                [orderByField]: orderDirection
+            }
+        });
 
         return Promise.all(
             students.map(async (student) => {

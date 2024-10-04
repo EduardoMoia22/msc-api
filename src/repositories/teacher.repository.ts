@@ -47,7 +47,11 @@ export class TeacherRepository {
     }
 
     public async findAll(): Promise<Teacher[]> {
-        const teachers = await this.prisma.teacher.findMany();
+        const teachers = await this.prisma.teacher.findMany({
+            orderBy: {
+                id: 'desc'
+            }
+        });
 
         return Promise.all(
             teachers.map(async (teacher) => {
