@@ -1,6 +1,6 @@
-import { Body, Controller, Get, HttpCode, HttpException, HttpStatus, Param, Post, Put, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpException, HttpStatus, Param, Post, Put, Query, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { StudentRequestDTO, StudentResponseDTO } from "DTOs/student.dtos";
 import { Student } from "entities/student.entity";
 import { AuthGuard } from "guards/auth.guard";
@@ -60,9 +60,14 @@ export class StudentController {
     @ApiResponse({ status: 200, description: 'Ok', type: StudentResponseDTO, isArray: true })
     @ApiResponse({ status: 400, description: 'Bad Request.' })
     @ApiResponse({ status: 401, description: 'Unauthorized.' })
+    @ApiQuery({ name: 'orderByField', required: false, type: String, description: 'Campo para ordernação, id ou entryDate' })
+    @ApiQuery({ name: 'orderDirection', required: false, type: String, description: 'Direção da ordernação, Asc ou Desc' })
     @Get()
-    public async findAllStudents(): Promise<StudentResponseDTO[]> {
-        const students: Student[] = await this.studentService.findAllStudents();
+    public async findAllStudents(
+        @Query('orderByField') orderByField: 'id' | 'entryDate' = 'id',
+        @Query('orderDirection') orderDirection: 'asc' | 'desc' = 'desc'
+    ): Promise<StudentResponseDTO[]> {
+        const students: Student[] = await this.studentService.findAllStudents(orderByField, orderDirection);
 
         return Promise.all(
             students.map(StudentResponseDTO.fromEntity)
