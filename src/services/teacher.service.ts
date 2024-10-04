@@ -136,6 +136,7 @@ export class TeacherService {
                 throw new HttpException('Nenhum professor foi encontrado no arquivo Excel.', HttpStatus.BAD_REQUEST);
             }
 
+            await this.cacheService.del(this.TEACHER_LIST_CACHE_KEY);
             await this.teacherQueue.add("process-teacher-creation-excel", teachers, { priority: 1 });
 
             return true;

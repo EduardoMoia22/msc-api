@@ -227,6 +227,7 @@ export class StudentService {
                 throw new HttpException('Nenhum aluno foi encontrado no arquivo Excel.', HttpStatus.BAD_REQUEST);
             }
 
+            await this.cacheService.del(this.STUDENT_LIST_CACHE_KEY);
             await this.studentQueue.add("process-student-creation-excel", students, { priority: 1 });
 
             return true;
