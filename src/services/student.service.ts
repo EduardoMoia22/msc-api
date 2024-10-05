@@ -176,8 +176,9 @@ export class StudentService {
         return studentExists;
     }
 
-    public async findAllStudents(): Promise<Student[]> {
-        const cachedStudents = await this.cacheService.get<Student[]>(this.STUDENT_LIST_CACHE_KEY);
+    public async findAllStudents(orderByField: 'id' | 'entryDate' = 'id', orderDirection: 'asc' | 'desc' = 'asc'): Promise<Student[]> {
+        const cacheKey = `${this.STUDENT_LIST_CACHE_KEY}:${orderByField}:${orderDirection}`;
+        const cachedStudents = await this.cacheService.get<Student[]>(cacheKey);
 
         if (cachedStudents) {
             console.log('Fetching students from cache.');
@@ -185,9 +186,9 @@ export class StudentService {
         }
 
         console.log('Fetching students from the database...');
-        const students: Student[] = await this.studentRepository.findAll();
+        const students: Student[] = await this.studentRepository.findAll(orderByField, orderDirection);
 
-        await this.cacheService.set(this.STUDENT_LIST_CACHE_KEY, students, this.CACHE_TTL);
+        await this.cacheService.set(cacheKey, students, this.CACHE_TTL);
         return students;
     }
 
