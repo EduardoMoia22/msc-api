@@ -22,15 +22,28 @@ export class StudentService {
     ) { }
 
     private async invalidateStudentCache(
-        studentId: number,
+        studentId?: number,
         email?: string,
         rm?: string,
         cpf?: string
     ): Promise<void> {
         const cacheKeys = [
-            this.cacheService.generateCacheKey('student', studentId),
-            this.STUDENT_LIST_CACHE_KEY
         ];
+
+        // Incluir a chave de cache para ordenação de lista de alunos
+        const orderFields = ['id', 'entryDate'] as const;
+        const orderDirections = ['asc', 'desc'] as const;
+
+        orderFields.forEach((field) => {
+            orderDirections.forEach((direction) => {
+                const orderedCacheKey = `${this.STUDENT_LIST_CACHE_KEY}:${field}:${direction}`;
+                cacheKeys.push(orderedCacheKey);
+            });
+        });
+
+        if (studentId) {
+            cacheKeys.push(this.cacheService.generateCacheKey('student', studentId));
+        }
 
         if (email) {
             cacheKeys.push(this.cacheService.generateCacheKey('student_email', email));
@@ -46,6 +59,7 @@ export class StudentService {
 
         await this.cacheService.invalidateMultiple(cacheKeys);
     }
+
 
     public async createStudent(data: StudentRequestDTO): Promise<Student> {
         const studentEmailExists: Student | null = await this.studentRepository.findByEmail(data.email);
@@ -68,7 +82,7 @@ export class StudentService {
         student.generateRM(lastStudent);
 
         const createdStudent: Student = await this.studentRepository.create(student)
-        await this.cacheService.del(this.STUDENT_LIST_CACHE_KEY);
+        await this.invalidateStudentCache();
         return createdStudent;
     }
 
