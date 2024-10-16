@@ -1,9 +1,9 @@
 import { PresenceRequestDTO } from "src/DTOs/presence.dtos";
 import { Presence } from "src/entities/presence.entity";
 import { Prisma } from "@prisma/client";
-import { StudentMapper } from "./Student.mapper";
 import { TeacherMapper } from "./teacher.mapper";
 import { Presences as RawPresence } from "@prisma/client";
+import { StudentMapper } from "./student.mapper";
 
 type PresenceWithStudentAndTeacher = Prisma.PresencesGetPayload<{
     include: {

@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { StudentRequestDTO } from "src/DTOs/student.dtos";
 import { Student } from "src/entities/student.entity";
-import { StudentMapper } from "src/mappers/Student.mapper";
+import { StudentMapper } from "src/mappers/student.mapper";
 import { StudentRepository } from "src/repositories/student.repository";
 import { Utils } from "src/tools/utils.tool";
 import { CacheService } from "./cache.service";
