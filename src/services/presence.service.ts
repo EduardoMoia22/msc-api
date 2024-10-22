@@ -74,4 +74,30 @@ export class PresenceService {
 
         return await this.presenceRepository.listPresences(studentId, teacherId, start, end);
     }
+
+    public async findById(id: number): Promise<Presence> {
+        const presence: Presence | null = await this.presenceRepository.findById(id);
+
+        if (!presence) {
+            throw new HttpException("Presença não encontrada.", HttpStatus.NOT_FOUND);
+        }
+
+        return presence;
+    }
+
+    public async delete(id: number): Promise<{ result: boolean }> {
+        try {
+            //Verifica se a presença existe
+            await this.findById(id);
+            await this.presenceRepository.delete(id);
+            return {
+                result: true
+            }
+        } catch (error: any) {
+            console.log(error);
+            return {
+                result: false
+            }
+        }
+    }
 }

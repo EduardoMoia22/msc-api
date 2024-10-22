@@ -70,9 +70,9 @@ export class ConfigService implements OnModuleInit {
             throw new HttpException("Erro referente a configuração. Entre em contato com os desenvolvedores.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        const updatedConfig: Config = await this.configRepository.update(config);
-
         config.update(data.classDurationInMinutes);
+        
+        const updatedConfig: Config = await this.configRepository.update(config);
 
         await this.cacheService.del(this.CONFIG_LIST_CACHE_KEY);
 
