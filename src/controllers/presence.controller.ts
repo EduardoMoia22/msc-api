@@ -51,4 +51,20 @@ export class PresenceController {
 
         return presences.map(PresenceResponseDTO.fromEntity);
     }
+
+    @UseGuards(AuthGuard)
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({ summary: 'Buscar presença pelo id' })
+    @ApiResponse({ status: 200, description: 'Ok', type: PresenceResponseDTO })
+    @ApiResponse({ status: 400, description: 'Bad Request.' })
+    @ApiResponse({ status: 401, description: 'Unauthorized.' })
+    @ApiResponse({ status: 404, description: 'Not Found.' })
+    @Get(":id")
+    public async findById(
+        @Param('id') id: string
+    ): Promise<PresenceResponseDTO> {
+        const presence: Presence = await this.presenceService.findById(parseInt(id));
+
+        return PresenceResponseDTO.fromEntity(presence);
+    }
 }
