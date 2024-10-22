@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Query, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { PresenceRequestDTO, PresenceResponseDTO } from "src/DTOs/presence.dtos";
 import { Presence } from "src/entities/presence.entity";
@@ -66,5 +66,21 @@ export class PresenceController {
         const presence: Presence = await this.presenceService.findById(parseInt(id));
 
         return PresenceResponseDTO.fromEntity(presence);
+    }
+
+    @UseGuards(AuthGuard)
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({ summary: 'Deletar presença pelo id' })
+    @ApiResponse({ status: 200, description: 'Ok' })
+    @ApiResponse({ status: 400, description: 'Bad Request.' })
+    @ApiResponse({ status: 401, description: 'Unauthorized.' })
+    @ApiResponse({ status: 404, description: 'Not Found.' })
+    @Delete(":id")
+    public async delete(
+        @Param('id') id: string
+    ): Promise<{ result: boolean }> {
+        const deletePresence = await this.presenceService.delete(parseInt(id));
+
+        return deletePresence;
     }
 }
