@@ -1,6 +1,6 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Put, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { UserRequestDTO, UserResponseDTO } from "src/DTOs/user.dtos";
+import { UpdateUserDTO, UserRequestDTO, UserResponseDTO } from "src/DTOs/user.dtos";
 import { User } from "src/entities/user.entity";
 import { AuthGuard } from "src/guards/auth.guard";
 import { UserService } from "src/services/user.service";
@@ -52,5 +52,19 @@ export class UserController {
         const user: User = await this.userService.findUserById(parseInt(id));
 
         return UserResponseDTO.fromEntity(user);
+    }
+    
+    @UseGuards(AuthGuard)
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({ summary: 'Buscar usuário por ID' })
+    @ApiResponse({ status: 200, description: 'Ok', type: UserResponseDTO })
+    @ApiResponse({ status: 400, description: 'Bad Request.' })
+    @ApiResponse({ status: 401, description: 'Unauthorized.' })
+    @ApiResponse({ status: 404, description: 'Not Found.' })
+    @Put("/:id")
+    public async updateUser(@Param("id") id: string, @Body() body: UpdateUserDTO): Promise<UserResponseDTO> {
+        const updateUser: User = await this.userService.updateUser(body, parseInt(id));
+
+        return UserResponseDTO.fromEntity(updateUser);
     }
 }

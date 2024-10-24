@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from "@nestjs/common";
-import { UserRequestDTO } from "src/DTOs/user.dtos";
+import { UpdateUserDTO, UserRequestDTO } from "src/DTOs/user.dtos";
 import { User } from "src/entities/user.entity";
 import { UserMapper } from "src/mappers/user.mapper";
 import { UserRepository } from "src/repositories/user.repository";
@@ -61,13 +61,29 @@ export class UserService {
         return await this.userRepository.findAll();
     }
 
-    public async findUserById(id: number): Promise<User>{
+    public async findUserById(id: number): Promise<User> {
         const user: User | null = await this.userRepository.findById(id);
 
-        if(!user){
+        if (!user) {
             throw new HttpException("Usuário não encontrado.", HttpStatus.NOT_FOUND);
         }
 
         return user;
+    }
+
+    public async updateUser(data: UpdateUserDTO, id: number): Promise<User> {
+        const user: User = await this.findUserById(id);
+
+        if (data.name) {
+            user.setName = data.name;
+        }
+        if (data.email) {
+            user.setEmail = data.email;
+        }
+        if (data.password) {
+            user.setPassword = await Utils.hashPassword(data.password);
+        }
+
+        return await this.userRepository.update(user);
     }
 }

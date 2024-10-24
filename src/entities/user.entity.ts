@@ -3,14 +3,26 @@ import { UserBuilder } from "src/builders/user.builder";
 export class User {
     constructor(
         private readonly id: number,
-        private readonly name: string,
-        private readonly email: string,
-        private readonly password: string
+        private name: string,
+        private email: string,
+        private password: string
     ) {
     }
 
     public static get Builder(): UserBuilder {
         return new UserBuilder();
+    }
+
+    public set setName(name: string) {
+        this.name = name;
+    }
+
+    public set setEmail(email: string) {
+        this.email = email;
+    }
+
+    public set setPassword(password: string) {
+        this.password = password;
     }
 
     public get getId(): number {
