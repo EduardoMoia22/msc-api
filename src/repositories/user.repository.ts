@@ -56,4 +56,15 @@ export class UserRepository {
 
         return UserMapper.prismaToEntity(user);
     }
+
+    public async update(data: User): Promise<User> {
+        const user = await this.prisma.user.update({
+            data: UserMapper.entityToPrisma(data),
+            where: {
+                id: data.getId
+            }
+        });
+
+        return UserMapper.prismaToEntity(user);
+    }
 }

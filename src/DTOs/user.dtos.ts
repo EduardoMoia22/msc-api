@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { IsEmail, IsNotEmpty, Length } from "class-validator";
 import { User } from "entities/user.entity";
 
@@ -49,3 +49,5 @@ export class UserResponseDTO {
         return new UserResponseDTO(user.getId, user.getName, user.getEmail);
     }
 }
+
+export class UpdateUserDTO extends PartialType(UserRequestDTO) {}
