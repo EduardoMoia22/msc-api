@@ -17,6 +17,9 @@ import { BullModule } from '@nestjs/bull';
         BullModule.registerQueue({
             name: 'teacher-queue',
         }),
+        BullModule.registerQueue({
+            name: 'billingQueue',
+        }),
     ],
     exports: [BullModule],
 })

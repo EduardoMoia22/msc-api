@@ -14,14 +14,15 @@ datasource db {
 }
 
 model Student {
-  id        Int         @id @default(autoincrement())
-  email     String      @unique
-  cpf       String      @unique
-  name      String
-  rm        String      @unique
-  entryDate DateTime
-  presences Presences[]
-  password  String
+  id         Int          @id @default(autoincrement())
+  email      String       @unique
+  cpf        String       @unique
+  name       String
+  rm         String       @unique
+  entryDate  DateTime
+  presences  Presences[]
+  password   String
+  Enrollment Enrollment[]
 
   @@map("tb_students")
 }
@@ -36,14 +37,14 @@ model Teacher {
 }
 
 model Presences {
-  id              Int      @id @default(autoincrement())
-  student         Student  @relation(fields: [studentId], references: [id])
-  studentId       Int
-  teacher         Teacher  @relation(fields: [teacherId], references: [id])
-  teacherId       Int
+  id                Int      @id @default(autoincrement())
+  student           Student  @relation(fields: [studentId], references: [id])
+  studentId         Int
+  teacher           Teacher  @relation(fields: [teacherId], references: [id])
+  teacherId         Int
   quantityOfClasses Int
-  startsAt        DateTime
-  endAt           DateTime
+  startsAt          DateTime
+  endAt             DateTime
 
   @@map("tb_presences")
 }
@@ -62,4 +63,82 @@ model Config {
   classDurationInMinutes Int
 
   @@map("tb_config")
+}
+
+model Plans {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String
+  price       Int
+  frequency   String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  Enrollment  Enrollment[]
+
+  @@map("tb_plans")
+}
+
+model Enrollment {
+  id              String            @id @default(uuid())
+  student         Student           @relation(fields: [studentId], references: [id])
+  studentId       Int
+  plan            Plans             @relation(fields: [planId], references: [id])
+  planId          Int
+  startDate       DateTime
+  endDate         DateTime?
+  status          EnrollmentStatus
+  monthlyFeeGross Int // Valor da mensalidade bruto em centavos
+  monthlyFeeNet   Int // Valor da mensalidade líquido em centavos
+  discount        Int? // Pode ser percentual ou valor fixo (armazene como valor fixo em centavos)
+  discountType    DiscountTypeEnum?
+  lateFee         Int? // Pode ser percentual ou valor fixo (armazene como valor fixo em centavos)
+  notes           String? // Campo opcional para observações
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Payment   Payment[]
+
+  @@map("tb_enrollments")
+}
+
+enum EnrollmentStatus {
+  active
+  inactive
+  canceled
+}
+
+enum DiscountTypeEnum {
+  FIXED
+  PERCENTAGE
+}
+
+model Payment {
+  id              String        @id @default(uuid())
+  enrollmentId    String
+  amount          Int
+  paymentDate     DateTime      @default(now())
+  dueDate         DateTime
+  paymentStatus   PaymentStatus
+  paymentMethodId Int
+  discount        Int?
+  lateFee         Int?
+
+  enrollment    Enrollment    @relation(fields: [enrollmentId], references: [id])
+  paymentMethod PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+
+  @@map("tb_payments")
+}
+
+model PaymentMethod {
+  id      Int    @id @default(autoincrement())
+  name    String
+  Payment Payment[]
+
+  @@map("tb_payment_methods")
+}
+
+enum PaymentStatus {
+  paid
+  pending
+  overdue
 }

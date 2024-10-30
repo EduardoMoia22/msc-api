@@ -6,11 +6,27 @@ import { StudentModule } from './modules/student.module';
 import { UserModule } from './modules/user.module';
 import { AuthModule } from './modules/auth.module';
 import { ConfigModule } from './modules/config.module';
-import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { PlanModule } from './modules/plan.module';
+import { EnrollmentModule } from './modules/enrollment.module';
+import { PaymentMethodModule } from './modules/payment-method.module';
+import { PaymentModule } from './modules/payment.module';
+import { BillingModule } from './modules/billing.module';
 
 @Module({
-  imports: [DataModule, StudentModule, TeacherModule, PresenceModule, UserModule, AuthModule, ConfigModule],
+  imports: [
+    DataModule,
+    StudentModule,
+    TeacherModule,
+    PresenceModule,
+    UserModule,
+    AuthModule,
+    ConfigModule,
+    PlanModule,
+    EnrollmentModule,
+    PaymentMethodModule,
+    PaymentModule,
+    BillingModule
+  ],
   controllers: [],
 })
 export class AppModule { }
