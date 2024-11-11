@@ -75,4 +75,28 @@ export class PresenceRepository {
 
         return presences.map(PresenceMapper.prismaToEntity);
     }
+
+    public async delete(id: number): Promise<void> {
+        await this.prisma.presences.delete({
+            where: { id }
+        });
+    }
+
+    public async findById(id: number): Promise<Presence | null> {
+        const presence = await this.prisma.presences.findUnique({
+            where: {
+                id: id
+            },
+            include: {
+                student: true,
+                teacher: true
+            }
+        });
+
+        if (!presence) {
+            return null;
+        }
+
+        return PresenceMapper.prismaToEntity(presence);
+    }
 }
