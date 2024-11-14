@@ -1,5 +1,7 @@
 import { Global, Module } from "@nestjs/common";
 import { PrismaService } from "src/configs/prisma.service";
+import { AccountCategoryRepository } from "src/repositories/account-category.repository";
+import { AccountsPayableRepository } from "src/repositories/accounts-payable.repository";
 import { ConfigRepository } from "src/repositories/config.repository";
 import { EnrollmentRepository } from "src/repositories/enrollment.repository";
 import { PaymentMethodRepository } from "src/repositories/payment-method.repository";
@@ -22,7 +24,9 @@ import { UserRepository } from "src/repositories/user.repository";
         PlanRepository,
         EnrollmentRepository,
         PaymentMethodRepository,
-        PaymentRepository
+        PaymentRepository,
+        AccountCategoryRepository,
+        AccountsPayableRepository
     ],
     exports: [
         StudentRepository,
@@ -33,7 +37,9 @@ import { UserRepository } from "src/repositories/user.repository";
         PlanRepository,
         EnrollmentRepository,
         PaymentMethodRepository,
-        PaymentRepository
+        PaymentRepository,
+        AccountCategoryRepository,
+        AccountsPayableRepository
     ]
 })
 export class DataModule {

@@ -11,6 +11,8 @@ import { EnrollmentModule } from './modules/enrollment.module';
 import { PaymentMethodModule } from './modules/payment-method.module';
 import { PaymentModule } from './modules/payment.module';
 import { BillingModule } from './modules/billing.module';
+import { AccountCategoryModule } from './modules/account-category.module';
+import { AccountsPayableModule } from './modules/accounts-payable.module';
 
 @Module({
   imports: [
@@ -25,7 +27,9 @@ import { BillingModule } from './modules/billing.module';
     EnrollmentModule,
     PaymentMethodModule,
     PaymentModule,
-    BillingModule
+    BillingModule,
+    AccountCategoryModule,
+    AccountsPayableModule
   ],
   controllers: [],
 })

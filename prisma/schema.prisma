@@ -130,7 +130,7 @@ model Payment {
 }
 
 model PaymentMethod {
-  id      Int    @id @default(autoincrement())
+  id      Int       @id @default(autoincrement())
   name    String
   Payment Payment[]
 
@@ -141,4 +141,41 @@ enum PaymentStatus {
   paid
   pending
   overdue
+}
+
+model AccountCategory {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+
+  // Relacionamento com AccountsPayable (1 para muitos)
+  accountsPayable AccountsPayable[]
+
+  @@map("tb_account_categories")
+}
+
+enum AccountStatus {
+  pending
+  paid
+  overdue
+
+  @@map("tb_account_status")
+}
+
+model AccountsPayable {
+  id                 String        @id @default(uuid())
+  description        String
+  dueDate            DateTime
+  estimatedValue     Float
+  actualValue        Float?
+  status             AccountStatus
+  notes              String?
+  reminderEnabled    Boolean // Habilita ou desabilita o lembrete
+  reminderDaysBefore Int? // Número de dias antes do vencimento para lembrar
+  accountCategoryId         String // Foreign key para Category
+
+  // Relacionamento com Category (muitos para 1)
+  category AccountCategory @relation(fields: [accountCategoryId], references: [id])
+
+  @@map("tb_accounts_payable")
 }

@@ -15,7 +15,7 @@ export class BillingService {
         private readonly enrollmentService: EnrollmentService
     ) { }
 
-    @Cron('*/60 * * * * *') // Executa no primeiro dia de cada mês à meia-noite
+    @Cron('0 0 1 * * *') // Executa no primeiro dia de cada mês à meia-noite
     // Caso precise testar algo, utilize esse cront @Cron('*/30 * * * * *') que roda a cada 30 segundos
     async handleCron() {
         try {
